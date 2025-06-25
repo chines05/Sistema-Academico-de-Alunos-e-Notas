@@ -1,12 +1,14 @@
 import { Router } from 'express'
-import { register, login } from '../controllers/AuthController.js'
+import AuthController from '../controllers/AuthController.js'
+import { verifyToken } from '../middlewares/authMiddleware.js'
 
 const router = Router()
 
-// POST /api/auth/register
-router.post('/register', register)
+// Rotas de autenticação publicas
+router.post('/register', AuthController.register)
+router.post('/login', AuthController.login)
 
-// POST /api/auth/login
-router.post('/login', login)
+// Rota protegida
+router.post('/logout', verifyToken, AuthController.logout)
 
 export default router
