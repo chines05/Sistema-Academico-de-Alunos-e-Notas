@@ -5,12 +5,16 @@ declare global {
     interface RootParamList {
       Login: undefined
       Register: undefined
-      Home: {
+      AppTabs: {
         user: {
           id: number
           nome: string
           email: string
         }
+        token: string
+      }
+      Disciplina: {
+        disciplinaId: number
         token: string
       }
     }

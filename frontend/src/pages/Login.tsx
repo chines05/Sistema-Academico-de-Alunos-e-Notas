@@ -47,9 +47,17 @@ const Login = () => {
         throw new Error('Dados incompletos na resposta')
       }
 
-      navigation.navigate('Home', {
-        user: response.user,
-        token: response.token,
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'AppTabs',
+            params: {
+              user: response.user,
+              token: response.token,
+            },
+          },
+        ],
       })
 
       Toast.show({
