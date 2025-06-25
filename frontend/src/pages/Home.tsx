@@ -17,9 +17,8 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-      // 1. Chama o endpoint de logout
       await api.post(
-        '/auth/logout', // Corrigido para a rota correta
+        '/auth/logout',
         {},
         {
           headers: {
@@ -28,7 +27,6 @@ const Home = () => {
         }
       )
 
-      // 2. Navega de volta para Login com reset (evita voltar com botão físico)
       navigation.reset({
         index: 0,
         routes: [{ name: 'Login' }],
