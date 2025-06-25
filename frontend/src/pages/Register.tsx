@@ -21,6 +21,7 @@ import { colors } from '../utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 import { RegisterFormData, registerSchema } from '../schemas/registerSchema'
 import Toast from 'react-native-toast-message'
+import * as Animatable from 'react-native-animatable'
 
 const { width } = Dimensions.get('window')
 
@@ -73,15 +74,20 @@ const Register = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
-          <View style={styles.header}>
+          <Animatable.View
+            animation="fadeInDown"
+            easing="ease-in-out"
+            duration={1000}
+            style={styles.header}
+          >
             <Image
-              source={require('../assets/imgs/logo-ifnmg.jpg')}
+              source={require('../assets/imgs/logo-ifnmg-almenara.jpg')}
               style={styles.logo}
               resizeMode="contain"
             />
             <Text style={styles.title}>Cadastro no Sistema</Text>
             <Text style={styles.subtitle}>Crie sua conta acadêmica</Text>
-          </View>
+          </Animatable.View>
 
           <View style={styles.formContainer}>
             <Controller

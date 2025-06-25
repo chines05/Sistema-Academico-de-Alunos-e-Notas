@@ -97,7 +97,7 @@ const Home = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <Image
-            source={require('../assets/imgs/logo-ifnmg.jpg')}
+            source={require('../assets/imgs/logo-ifnmg-almenara.jpg')}
             style={styles.logo}
             resizeMode="contain"
           />

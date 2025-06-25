@@ -1,11 +1,9 @@
 import React from 'react'
 import {
   View,
-  Alert,
   Text,
   StyleSheet,
   TouchableOpacity,
-  ToastAndroid,
   ActivityIndicator,
   Image,
   KeyboardAvoidingView,
@@ -21,6 +19,7 @@ import Input from '../components/Input'
 import { colors } from '../utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 import Toast from 'react-native-toast-message'
+import * as Animatable from 'react-native-animatable'
 
 const { width } = Dimensions.get('window')
 
@@ -78,15 +77,15 @@ const Login = () => {
       style={[styles.container, { backgroundColor: colors.branco }]}
     >
       <View style={styles.content}>
-        <View style={styles.header}>
+        <Animatable.View animation="zoomIn" delay={200} style={styles.header}>
           <Image
-            source={require('../assets/imgs/logo-ifnmg.jpg')}
+            source={require('../assets/imgs/logo-ifnmg-almenara.jpg')}
             style={styles.logo}
             resizeMode="contain"
           />
           <Text style={styles.title}>Sistema Acadêmico</Text>
           <Text style={styles.subtitle}>Acesse sua conta</Text>
-        </View>
+        </Animatable.View>
 
         <View style={styles.formContainer}>
           <Controller

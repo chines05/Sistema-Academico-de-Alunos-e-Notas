@@ -37,30 +37,17 @@ const AppTabs = ({ route }: any) => {
             </View>
           )
         },
-        tabBarActiveTintColor: colors.verde, // Verde do IFNMG
-        tabBarInactiveTintColor: colors.cinza, // Cinza para itens inativos
+        tabBarActiveTintColor: colors.verde,
+        tabBarInactiveTintColor: colors.cinza,
         tabBarStyle: {
-          backgroundColor: colors.branco, // Fundo branco
-          borderWidth: 1,
+          backgroundColor: colors.branco,
           borderTopWidth: 1,
-          elevation: 10, // Sombra mais pronunciada
           height: 70,
-          shadowColor: colors.verdeEscuro,
-          shadowOffset: { width: 0, height: -5 },
-          shadowOpacity: 0.1,
-          shadowRadius: 10,
-          position: 'absolute',
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          paddingHorizontal: 20,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-          marginBottom: 5,
-        },
-        tabBarItemStyle: {
-          paddingVertical: 8,
+          fontSize: 14,
         },
       })}
     >
