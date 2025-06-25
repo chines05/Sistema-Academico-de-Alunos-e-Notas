@@ -5,4 +5,5 @@ export const colors = {
   vermelho: '#cd191e',
   preto: '#000000',
   branco: '#FFFFFF',
+  cinza: '#9E9E9E',
 }

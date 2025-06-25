@@ -7,6 +7,8 @@ import Login from '../../pages/Login'
 import Register from '../../pages/Register'
 import Profile from '../../pages/Profile'
 import Disciplina from '../../pages/Disciplina'
+import { StyleSheet, View } from 'react-native'
+import { colors } from '../../utils/colors'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -17,26 +19,48 @@ const AppTabs = ({ route }: any) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          const icons: Record<string, string> = {
-            Home: 'home',
-            Profile: 'person',
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: string
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline'
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline'
+          } else {
+            iconName = 'alert-circle'
           }
+
+          // Ícone com círculo de fundo quando ativo
           return (
-            <Ionicons
-              name={(icons[route.name] as any) || 'alert-circle'}
-              size={size}
-              color={color}
-            />
+            <View style={focused ? styles.activeIconContainer : null}>
+              <Ionicons name={iconName} size={size} color={color} />
+            </View>
           )
         },
-        tabBarActiveTintColor: '#3B82F6',
-        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarActiveTintColor: colors.verde, // Verde do IFNMG
+        tabBarInactiveTintColor: colors.cinza, // Cinza para itens inativos
         tabBarStyle: {
-          backgroundColor: '#F3F4F6',
+          backgroundColor: colors.branco, // Fundo branco
+          borderWidth: 1,
           borderTopWidth: 1,
-          elevation: 2,
+          elevation: 10, // Sombra mais pronunciada
           height: 70,
+          shadowColor: colors.verdeEscuro,
+          shadowOffset: { width: 0, height: -5 },
+          shadowOpacity: 0.1,
+          shadowRadius: 10,
+          position: 'absolute',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          paddingHorizontal: 20,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+          marginBottom: 5,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 8,
         },
       })}
     >
@@ -44,17 +68,30 @@ const AppTabs = ({ route }: any) => {
         name="Home"
         component={Home}
         initialParams={{ user, token }}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Início',
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
         initialParams={{ user, token }}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Perfil',
+        }}
       />
     </Tab.Navigator>
   )
 }
+
+const styles = StyleSheet.create({
+  activeIconContainer: {
+    backgroundColor: colors.verdeClaro + '20',
+    borderRadius: 30,
+  },
+})
 
 const Routes = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>

@@ -214,14 +214,8 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     paddingVertical: 25,
-    backgroundColor: colors.branco,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 2 },
   },
   logo: {
     width: 160,

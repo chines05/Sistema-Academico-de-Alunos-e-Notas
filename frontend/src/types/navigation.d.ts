@@ -15,6 +15,10 @@ declare global {
         disciplinaId: number
         token: string
       }
+      Profile: {
+        user: UserType
+        token: string
+      }
     }
   }
 }
