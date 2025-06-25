@@ -25,7 +25,7 @@ async function seed() {
       `INSERT INTO disciplinas (nome, semestre) VALUES
        ('Programação Web', '2023.1'),
        ('Banco de Dados', '2023.1'),
-       ('Matemática Discreta', '2023.1')`
+       ('Logica Matematica', '2023.1')`
     )
 
     // Cria matrículas
