@@ -44,6 +44,7 @@ const AuthController = {
           nome,
           email,
           cpf,
+          createdAt: new Date().toISOString(),
         },
       })
     } catch (error) {
