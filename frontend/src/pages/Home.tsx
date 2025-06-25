@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -7,44 +7,73 @@ import {
   ScrollView,
   Image,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
-import { HomeProps } from '../types/types'
+import { Picker } from '@react-native-picker/picker'
+import { HomeProps, MatriculasResponseType } from '../types/types'
 import { colors } from '../utils/colors'
-
-// Dados mockados de disciplinas (substitua pelos dados reais da sua API)
-const disciplinas = [
-  { id: 1, nome: 'Programação Mobile', semestre: '2023.1', codigo: 'COMP123' },
-  { id: 2, nome: 'Banco de Dados', semestre: '2023.1', codigo: 'COMP456' },
-  {
-    id: 3,
-    nome: 'Inteligência Artificial',
-    semestre: '2023.1',
-    codigo: 'COMP789',
-  },
-]
+import Toast from 'react-native-toast-message'
+import api from '../utils/api'
 
 const Home = () => {
   const route = useRoute()
   const { user, token } = route.params as HomeProps
+  const [disciplinas, setDisciplinas] = useState<MatriculasResponseType | null>(
+    null
+  )
+  const [loading, setLoading] = useState(true)
+  const [semestres, setSemestres] = useState<string[]>([])
+  const [semestreSelecionado, setSemestreSelecionado] =
+    useState<string>('Todos')
   const navigation = useNavigation()
 
   const handleVerNotas = (disciplinaId: number) => {
-    navigation.reset({
-      index: 0,
-      routes: [
-        {
-          name: 'Disciplina',
-          params: {
-            user,
-            disciplinaId,
-            token,
-          },
-        },
-      ],
+    navigation.navigate('Disciplina', {
+      user,
+      disciplinaId,
+      token,
     })
   }
+
+  const loadMatriculas = async () => {
+    try {
+      const { data } = await api.get(`/matriculas/aluno/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      setDisciplinas(data)
+
+      const todosSemestres = [
+        'Todos',
+        ...Array.from(
+          new Set(data.matriculas.map((d: { semestre: number }) => d.semestre))
+        ).map(String),
+      ]
+      setSemestres(todosSemestres)
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Você não está matriculado em nenhuma disciplina',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadMatriculas()
+  }, [token, user.id])
+
+  const disciplinasFiltradas =
+    semestreSelecionado === 'Todos'
+      ? disciplinas?.matriculas
+      : disciplinas?.matriculas?.filter(
+          (d) => String(d.semestre) === semestreSelecionado
+        )
 
   if (!token || !user) {
     return (
@@ -54,10 +83,18 @@ const Home = () => {
     )
   }
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.verde} />
+        <Text style={styles.loadingText}>Carregando suas disciplinas...</Text>
+      </View>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header Institucional */}
         <View style={styles.header}>
           <Image
             source={require('../assets/imgs/logo-ifnmg.jpg')}
@@ -67,7 +104,6 @@ const Home = () => {
           <Text style={styles.title}>Sistema Acadêmico</Text>
         </View>
 
-        {/* Saudação ao usuário */}
         <View style={styles.greetingContainer}>
           <Text style={styles.greeting}>
             Bem-vindo, {user.nome.split(' ')[0]}!
@@ -75,42 +111,73 @@ const Home = () => {
           <Text style={styles.subtitle}>Suas disciplinas matriculadas</Text>
         </View>
 
-        {/* Lista de Disciplinas */}
-        <View style={styles.disciplinasContainer}>
-          {disciplinas.map((disciplina) => (
-            <View key={disciplina.id} style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Ionicons name="book" size={24} color={colors.verde} />
-                <Text style={styles.disciplinaNome}>{disciplina.nome}</Text>
-              </View>
-
-              <View style={styles.cardBody}>
-                <View style={styles.infoRow}>
-                  <Ionicons name="calendar" size={16} color="#666" />
-                  <Text style={styles.infoText}>{disciplina.semestre}</Text>
-                </View>
-                <View style={styles.infoRow}>
-                  <Ionicons name="barcode" size={16} color="#666" />
-                  <Text style={styles.infoText}>{disciplina.codigo}</Text>
-                </View>
-              </View>
-
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleVerNotas(disciplina.id)}
+        {semestres.length > 1 && (
+          <View style={styles.filtroContainer}>
+            <Text style={styles.filtroLabel}>Filtrar por semestre:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={semestreSelecionado}
+                onValueChange={(itemValue) => setSemestreSelecionado(itemValue)}
+                style={styles.picker}
+                dropdownIconColor={colors.verde}
               >
-                <Text style={styles.buttonText}>Ver notas</Text>
-                <Ionicons name="chevron-forward" size={20} color="white" />
-              </TouchableOpacity>
+                {semestres.map((semestre) => (
+                  <Picker.Item
+                    key={semestre}
+                    label={
+                      semestre === 'Todos' ? 'Todos' : `${semestre}º semestre`
+                    }
+                    value={semestre}
+                  />
+                ))}
+              </Picker>
             </View>
-          ))}
-        </View>
+          </View>
+        )}
 
-        {/* Rodapé Institucional */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            IFNMG © {new Date().getFullYear()} - Todos os direitos reservados
-          </Text>
+        <View style={styles.disciplinasContainer}>
+          {disciplinasFiltradas && disciplinasFiltradas.length > 0 ? (
+            disciplinasFiltradas.map((disciplina) => (
+              <View key={disciplina.id} style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <Ionicons name="book" size={24} color={colors.verde} />
+                  <View style={styles.disciplinaInfo}>
+                    <Text style={styles.disciplinaNome}>{disciplina.nome}</Text>
+                    <Text style={styles.disciplinaSemestre}>
+                      {disciplina.semestre} º semestre
+                    </Text>
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleVerNotas(disciplina.id)}
+                >
+                  <Text style={styles.buttonText}>Ver notas</Text>
+                  <Ionicons name="chevron-forward" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name="school-outline"
+                size={60}
+                color={colors.verde}
+                style={styles.emptyIcon}
+              />
+              <Text style={styles.emptyTitle}>
+                {semestreSelecionado === 'Todos'
+                  ? 'Nenhuma matrícula encontrada'
+                  : `Nenhuma matrícula em ${semestreSelecionado}`}
+              </Text>
+              <Text style={styles.emptyText}>
+                {semestreSelecionado === 'Todos'
+                  ? 'Você não está matriculado em nenhuma disciplina'
+                  : `Você não tem disciplinas no semestre ${semestreSelecionado}`}
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -124,7 +191,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingTop: 70,
+    paddingTop: 50,
     paddingBottom: 20,
   },
   container: {
@@ -133,28 +200,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.branco,
+  },
+  loadingText: {
+    marginTop: 15,
+    color: colors.verdeEscuro,
+    fontSize: 16,
+  },
   header: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 25,
+    backgroundColor: colors.branco,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#f0f0f0',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
   },
   logo: {
-    width: 150,
-    height: 80,
+    width: 160,
+    height: 90,
     marginBottom: 10,
   },
   title: {
     fontSize: 22,
     color: colors.verde,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   greetingContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 25,
+    paddingVertical: 20,
+    backgroundColor: colors.branco,
   },
   greeting: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.verdeEscuro,
     marginBottom: 5,
@@ -163,76 +249,106 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
+  filtroContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  },
+  filtroLabel: {
+    fontSize: 16,
+    color: colors.verdeEscuro,
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: colors.verde,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  picker: {
+    width: '100%',
+    height: 50,
+    color: colors.verdeEscuro,
+    backgroundColor: colors.branco,
+  },
   disciplinasContainer: {
-    paddingHorizontal: 15,
-    marginTop: 10,
+    paddingHorizontal: 20,
+    marginTop: 5,
   },
   card: {
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 16,
+    padding: 20,
     marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.verde,
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    paddingBottom: 12,
+    marginBottom: 15,
+  },
+  disciplinaInfo: {
+    flex: 1,
+    marginLeft: 12,
   },
   disciplinaNome: {
     fontSize: 18,
     fontWeight: '600',
-    marginLeft: 10,
     color: colors.verdeEscuro,
   },
-  cardBody: {
-    marginBottom: 15,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  infoText: {
-    marginLeft: 8,
+  disciplinaSemestre: {
     fontSize: 14,
     color: '#666',
+    marginTop: 4,
   },
   button: {
     backgroundColor: colors.verde,
     borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
   },
-  footer: {
-    marginTop: 20,
-    paddingVertical: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#999',
-  },
   error: {
     fontSize: 18,
     color: 'red',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+    marginTop: 20,
+  },
+  emptyIcon: {
+    opacity: 0.7,
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: colors.verdeEscuro,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
   },
 })
 

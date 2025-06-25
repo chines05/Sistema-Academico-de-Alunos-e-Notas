@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { UserType } from './types'
 
 declare global {
   namespace ReactNavigation {
@@ -6,14 +7,11 @@ declare global {
       Login: undefined
       Register: undefined
       AppTabs: {
-        user: {
-          id: number
-          nome: string
-          email: string
-        }
+        user: UserType
         token: string
       }
       Disciplina: {
+        user: UserType
         disciplinaId: number
         token: string
       }

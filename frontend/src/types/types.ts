@@ -1,4 +1,4 @@
-export type Aluno = {
+export type UserType = {
   id: number
   nome: string
   email: string
@@ -12,4 +12,15 @@ export interface HomeProps {
   }
   token: string
   disciplinaId: number
+}
+
+export interface MatriculasResponseType {
+  alunoId: string
+  matriculas: MatriculaType[]
+}
+
+export interface MatriculaType {
+  id: number
+  nome: string
+  semestre: number
 }
