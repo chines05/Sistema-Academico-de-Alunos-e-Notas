@@ -1,5 +1,7 @@
 import React from 'react'
-import { TextInput, View, Text, StyleSheet } from 'react-native'
+import { View, TextInput, Text, StyleSheet } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { colors } from '../utils/colors'
 
 interface InputProps {
   placeholder: string
@@ -7,6 +9,7 @@ interface InputProps {
   onChangeText: (text: string) => void
   onBlur: () => void
   error?: any
+  icon?: keyof typeof Ionicons.glyphMap
   secureTextEntry?: boolean
   keyboardType?: 'default' | 'numeric' | 'email-address'
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters'
@@ -18,22 +21,38 @@ const Input = ({
   onChangeText,
   onBlur,
   error,
-  secureTextEntry = false,
-  keyboardType = 'default',
-  autoCapitalize = 'sentences',
+  icon,
+  ...props
 }: InputProps) => {
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-        onBlur={onBlur}
-        style={[styles.input, error && styles.inputError]}
-        secureTextEntry={secureTextEntry}
-        keyboardType={keyboardType}
-        autoCapitalize={autoCapitalize}
-      />
+      <View style={[styles.inputContainer, error && styles.inputError]}>
+        {icon && (
+          <Ionicons
+            name={icon}
+            size={20}
+            color={error ? colors.vermelho : '#666'}
+            style={styles.icon}
+          />
+        )}
+        <TextInput
+          placeholder={placeholder}
+          placeholderTextColor="#999"
+          value={value}
+          onChangeText={onChangeText}
+          onBlur={onBlur}
+          style={[styles.input, error && styles.inputErrorText]}
+          {...props}
+        />
+        {error && (
+          <Ionicons
+            name="alert-circle"
+            size={18}
+            color={colors.vermelho}
+            style={styles.errorIcon}
+          />
+        )}
+      </View>
       {error && <Text style={styles.errorText}>{error.message}</Text>}
     </View>
   )
@@ -41,22 +60,42 @@ const Input = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 15,
+    marginBottom: 20,
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
-    padding: 15,
-    borderRadius: 6,
-    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#f9f9f9',
   },
   inputError: {
-    borderColor: 'red',
+    borderColor: colors.vermelho,
+    backgroundColor: '#fff9f9',
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    color: '#333',
+    fontSize: 15,
+    paddingVertical: 0,
+  },
+  inputErrorText: {
+    color: colors.vermelho,
+  },
+  errorIcon: {
+    marginLeft: 10,
   },
   errorText: {
-    color: 'red',
+    color: colors.vermelho,
     fontSize: 12,
     marginTop: 5,
+    marginLeft: 5,
   },
 })
 

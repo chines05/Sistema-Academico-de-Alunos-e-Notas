@@ -1,22 +1,32 @@
 import React from 'react'
 import {
   View,
-  Button,
   Alert,
   Text,
   StyleSheet,
   TouchableOpacity,
   ToastAndroid,
+  ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions,
 } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, LoginFormData } from '../schemas/auth'
+import { loginSchema, LoginFormData } from '../schemas/loginSchema'
 import api from '../utils/api'
 import { useNavigation } from '@react-navigation/native'
 import Input from '../components/Input'
+import { colors } from '../utils/colors'
+import { Ionicons } from '@expo/vector-icons'
+import Toast from 'react-native-toast-message'
+
+const { width } = Dimensions.get('window')
 
 const Login = () => {
   const navigation = useNavigation()
+
   const {
     control,
     handleSubmit,
@@ -31,96 +41,205 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await api.post('/auth/login', data)
+      const { data: response } = await api.post('/auth/login', data)
 
-      if (!response.data.token || !response.data.user) {
+      if (!response.token || !response.user) {
         throw new Error('Dados incompletos na resposta')
       }
 
       navigation.navigate('Home', {
-        user: response.data.user,
-        token: response.data.token,
+        user: response.user,
+        token: response.token,
       })
 
-      ToastAndroid.show('Login realizado com sucesso', ToastAndroid.SHORT)
+      Toast.show({
+        type: 'success',
+        text1: response.message,
+      })
     } catch (error: any) {
-      Alert.alert('Erro', error.response?.data?.erro || 'Credenciais inválidas')
-      console.error('Erro no login:', error)
+      Toast.show({
+        type: 'error',
+        text1: error.response?.data?.erro || 'Falha ao realizar login',
+      })
     }
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login IFNMG</Text>
-
-      <Controller
-        control={control}
-        name="email"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            placeholder="Email"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            error={errors.email}
-            keyboardType="email-address"
-            autoCapitalize="none"
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={[styles.container, { backgroundColor: colors.branco }]}
+    >
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Image
+            source={require('../assets/imgs/logo-ifnmg.jpg')}
+            style={styles.logo}
+            resizeMode="contain"
           />
-        )}
-      />
+          <Text style={styles.title}>Sistema Acadêmico</Text>
+          <Text style={styles.subtitle}>Acesse sua conta</Text>
+        </View>
 
-      <Controller
-        control={control}
-        name="senha"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            placeholder="Senha"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            secureTextEntry
-            error={errors.senha}
+        <View style={styles.formContainer}>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Email Institucional"
+                icon="mail-outline"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.email}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            )}
           />
-        )}
-      />
 
-      <Button
-        title={isSubmitting ? 'Carregando...' : 'Entrar'}
-        onPress={handleSubmit(onSubmit)}
-        disabled={isSubmitting}
-      />
+          <Controller
+            control={control}
+            name="senha"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Senha"
+                icon="lock-closed-outline"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                secureTextEntry
+                error={errors.senha}
+              />
+            )}
+          />
 
-      <TouchableOpacity
-        style={styles.registerLink}
-        onPress={() => navigation.navigate('Register')}
-      >
-        <Text style={styles.registerLinkText}>Não tem conta? Cadastre-se</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity
+            style={[styles.button, isSubmitting && styles.buttonDisabled]}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
+            activeOpacity={0.8}
+          >
+            {isSubmitting ? (
+              <ActivityIndicator color={colors.branco} />
+            ) : (
+              <View style={styles.buttonContent}>
+                <Text style={styles.buttonText}>ENTRAR</Text>
+                <Ionicons
+                  name="arrow-forward"
+                  size={20}
+                  color={colors.branco}
+                />
+              </View>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Register')}
+            style={styles.registerLink}
+            activeOpacity={0.6}
+          >
+            <Text style={styles.linkText}>
+              Não possui cadastro?{' '}
+              <Text style={styles.linkTextBold}>Crie sua conta</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>
+          IFNMG © {new Date().getFullYear()}
+        </Text>
+      </View>
+    </KeyboardAvoidingView>
   )
 }
 
-// Estilos (manter os mesmos do exemplo anterior)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingBottom: 60,
+  },
+  header: {
+    alignItems: 'center',
+    paddingBottom: 30,
+  },
+  logo: {
+    width: width * 0.5,
+    height: width * 0.3,
+    marginBottom: 15,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
+    fontSize: 22,
+    color: colors.verde,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+  },
+  formContainer: {
+    paddingHorizontal: 30,
+    marginTop: 10,
+  },
+  button: {
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 25,
+    backgroundColor: colors.verde,
+    flexDirection: 'row',
+    elevation: 3,
+    shadowColor: colors.verde,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: colors.branco,
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+    marginRight: 10,
   },
   registerLink: {
     marginTop: 20,
-    alignItems: 'center',
+    alignSelf: 'center',
   },
-  registerLinkText: {
-    color: '#3498db',
-    fontSize: 16,
+  linkText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  linkTextBold: {
+    color: colors.vermelho,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
+  footer: {
+    paddingVertical: 15,
+    width: '100%',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  footerText: {
+    color: '#666',
+    fontSize: 12,
   },
 })
 
