@@ -9,11 +9,24 @@ import {
 import { useRoute, useNavigation } from '@react-navigation/native'
 import type { HomeScreenProps } from '../types/navigation'
 import api from '../utils/api'
+import Toast from 'react-native-toast-message'
 
 const Home = () => {
   const route = useRoute<HomeScreenProps['route']>()
   const navigation = useNavigation()
-  const { token, user } = route.params
+  const { token, user } = route.params || {}
+
+  if (!token) {
+    Toast.show({
+      type: 'error',
+      text1: 'Sessão expirada ou inválida',
+    })
+
+    return navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    })
+  }
 
   const handleLogout = async () => {
     try {
@@ -32,7 +45,10 @@ const Home = () => {
         routes: [{ name: 'Login' }],
       })
 
-      ToastAndroid.show('Logout realizado com sucesso', ToastAndroid.SHORT)
+      Toast.show({
+        type: 'success',
+        text1: 'Sessão finalizada com sucesso',
+      })
     } catch (error: any) {
       console.error('Erro no logout:', error)
       ToastAndroid.show(
