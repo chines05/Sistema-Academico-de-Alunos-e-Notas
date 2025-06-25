@@ -14,7 +14,7 @@ export const getNotasDisciplina = async (req, res) => {
     )
 
     if (!notas.length) {
-      return res.status(404).send({ erro: 'Notas não encontradas' })
+      return res.status(404).send({ message: 'Notas não encontradas' })
     }
 
     res.send({

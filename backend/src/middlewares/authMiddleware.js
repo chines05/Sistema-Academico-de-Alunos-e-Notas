@@ -8,7 +8,7 @@ export const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader) {
-    return res.status(401).json({
+    return res.status(401).send({
       erro: 'Token não fornecido. Faça login para acessar.',
     })
   }
@@ -17,7 +17,7 @@ export const verifyToken = async (req, res, next) => {
   const parts = authHeader.split(' ')
 
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    return res.status(401).json({
+    return res.status(401).send({
       erro: 'Formato de token inválido. Use: Bearer <token>',
     })
   }
@@ -34,7 +34,7 @@ export const verifyToken = async (req, res, next) => {
     ])
 
     if (!user.length) {
-      return res.status(401).json({ erro: 'Usuário não encontrado' })
+      return res.status(401).send({ erro: 'Usuário não encontrado' })
     }
 
     // 5. Adiciona o ID do usuário à requisição
@@ -51,6 +51,6 @@ export const verifyToken = async (req, res, next) => {
         ? 'Token expirado. Faça login novamente.'
         : 'Token inválido. Autentique-se novamente.'
 
-    return res.status(401).json({ erro: message })
+    return res.status(401).send({ erro: message })
   }
 }

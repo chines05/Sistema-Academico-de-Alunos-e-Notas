@@ -16,7 +16,7 @@ export const getMatriculasAluno = async (req, res) => {
     if (matriculas.length === 0) {
       return res
         .status(404)
-        .send({ erro: 'Nenhuma matrícula encontrada para este aluno' })
+        .send({ message: 'Nenhuma matrícula encontrada para este aluno' })
     }
 
     res.status(200).send({
