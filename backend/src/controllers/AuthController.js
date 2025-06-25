@@ -35,10 +35,13 @@ export const register = async (req, res) => {
 
     // Resposta sem dados sensíveis
     res.status(201).send({
-      id: result.insertId,
-      nome,
-      email,
-      cpf,
+      message: 'Usuário cadastrado com sucesso',
+      user: {
+        id: result.insertId,
+        nome,
+        email,
+        cpf,
+      },
     })
   } catch (error) {
     console.error('Erro no cadastro:', error)
@@ -76,9 +79,12 @@ export const login = async (req, res) => {
 
     // Resposta sem dados sensíveis
     res.send({
-      id: user[0].id,
-      nome: user[0].nome,
-      email: user[0].email,
+      message: 'Login realizado com sucesso',
+      user: {
+        id: user[0].id,
+        nome: user[0].nome,
+        email: user[0].email,
+      },
       token,
     })
   } catch (error) {
