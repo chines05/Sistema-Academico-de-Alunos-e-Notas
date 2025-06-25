@@ -1,29 +1,66 @@
-import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
-import { useRoute } from '@react-navigation/native'
+import React from 'react'
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ToastAndroid,
+} from 'react-native'
+import { useRoute, useNavigation } from '@react-navigation/native'
 import type { HomeScreenProps } from '../types/navigation'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import api from '../utils/api'
 
 const Home = () => {
   const route = useRoute<HomeScreenProps['route']>()
-  const [userData, setUserData] = useState(route.params.user)
+  const navigation = useNavigation()
+  const { token, user } = route.params
 
-  // Verifica dados no AsyncStorage ao carregar
-  useEffect(() => {
-    const loadStorageData = async () => {
-      const storedUser = await AsyncStorage.getItem('@user_data')
-      if (storedUser) {
-        setUserData(JSON.parse(storedUser))
-      }
+  const handleLogout = async () => {
+    try {
+      // 1. Chama o endpoint de logout
+      await api.post(
+        '/auth/logout', // Corrigido para a rota correta
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      // 2. Navega de volta para Login com reset (evita voltar com botão físico)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
+
+      ToastAndroid.show('Logout realizado com sucesso', ToastAndroid.SHORT)
+    } catch (error: any) {
+      console.error('Erro no logout:', error)
+      ToastAndroid.show(
+        error.response?.data?.erro || 'Erro ao sair',
+        ToastAndroid.SHORT
+      )
     }
-    loadStorageData()
-  }, [])
+  }
+
+  if (!token || !user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>Erro: Dados de autenticação inválidos</Text>
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>Bem-vindo, {userData.nome}!</Text>
-      <Text style={styles.detail}>Matrícula: {userData.id}</Text>
-      <Text style={styles.detail}>Email: {userData.email}</Text>
+      <Text style={styles.welcome}>Bem-vindo, {user.nome}!</Text>
+      <Text style={styles.detail}>Matrícula: {user.id}</Text>
+      <Text style={styles.detail}>Email: {user.email}</Text>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutText}>Sair</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -46,6 +83,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 8,
     color: '#34495e',
+  },
+  error: {
+    fontSize: 18,
+    color: 'red',
+  },
+  logoutButton: {
+    marginTop: 30,
+    padding: 10,
+    backgroundColor: '#e74c3c',
+    borderRadius: 5,
+  },
+  logoutText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 })
 

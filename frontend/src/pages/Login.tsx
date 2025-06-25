@@ -1,51 +1,51 @@
-import React, { useState } from 'react'
-import { View, TextInput, Button, Alert, Text, StyleSheet } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import React from 'react'
+import {
+  View,
+  Button,
+  Alert,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ToastAndroid,
+} from 'react-native'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { loginSchema, LoginFormData } from '../schemas/auth'
 import api from '../utils/api'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useNavigation } from '@react-navigation/native'
+import Input from '../components/Input'
 
 const Login = () => {
-  const [email, setEmail] = useState('chines@aluno.ifnmg.edu.br')
-  const [senha, setSenha] = useState('chines05')
-  const [loading, setLoading] = useState(false)
   const navigation = useNavigation()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: 'chines@aluno.ifnmg.edu.br',
+      senha: 'chines05',
+    },
+  })
 
-  const handleLogin = async () => {
-    if (!email || !senha) {
-      Alert.alert('Erro', 'Preencha email e senha')
-      return
-    }
-
-    setLoading(true)
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      const { data } = await api.post('/auth/login', { email, senha })
+      const response = await api.post('/auth/login', data)
 
-      const token = data.token
-      if (!token) {
-        Alert.alert('Erro', 'Token de autenticação inválido')
-        return
+      if (!response.data.token || !response.data.user) {
+        throw new Error('Dados incompletos na resposta')
       }
-
-      const user = {
-        id: data.id,
-        nome: data.nome,
-        email: data.email,
-      }
-
-      await AsyncStorage.multiSet([
-        ['@auth_token', token],
-        ['@user_data', JSON.stringify(user)],
-      ])
 
       navigation.navigate('Home', {
-        user,
-        token,
+        user: response.data.user,
+        token: response.data.token,
       })
-    } catch (error) {
-      Alert.alert('Erro', 'Credenciais inválidas')
+
+      ToastAndroid.show('Login realizado com sucesso', ToastAndroid.SHORT)
+    } catch (error: any) {
+      Alert.alert('Erro', error.response?.data?.erro || 'Credenciais inválidas')
       console.error('Erro no login:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -53,32 +53,54 @@ const Login = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Login IFNMG</Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            placeholder="Email"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        )}
       />
 
-      <TextInput
-        placeholder="Senha"
-        value={senha}
-        onChangeText={setSenha}
-        style={styles.input}
-        secureTextEntry
+      <Controller
+        control={control}
+        name="senha"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            placeholder="Senha"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            secureTextEntry
+            error={errors.senha}
+          />
+        )}
       />
 
       <Button
-        title={loading ? 'Carregando...' : 'Entrar'}
-        onPress={handleLogin}
-        disabled={loading}
+        title={isSubmitting ? 'Carregando...' : 'Entrar'}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
       />
+
+      <TouchableOpacity
+        style={styles.registerLink}
+        onPress={() => navigation.navigate('Register')}
+      >
+        <Text style={styles.registerLinkText}>Não tem conta? Cadastre-se</Text>
+      </TouchableOpacity>
     </View>
   )
 }
 
+// Estilos (manter os mesmos do exemplo anterior)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -92,13 +114,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 15,
-    marginBottom: 15,
-    borderRadius: 6,
-    backgroundColor: '#fff',
+  registerLink: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  registerLinkText: {
+    color: '#3498db',
+    fontSize: 16,
   },
 })
 
