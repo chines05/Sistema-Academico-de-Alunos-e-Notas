@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt'
 
 async function seed() {
   try {
-    // Limpa tabelas (cuidado em produção!)
     await db.query('SET FOREIGN_KEY_CHECKS = 0')
     await db.query('TRUNCATE TABLE notas')
     await db.query('TRUNCATE TABLE matriculas')
@@ -11,39 +10,70 @@ async function seed() {
     await db.query('TRUNCATE TABLE alunos')
     await db.query('SET FOREIGN_KEY_CHECKS = 1')
 
-    // Cadastra alunos
-    const senhaPadrao = await bcrypt.hash('senha123', 10)
-    const [alunos] = await db.query(
+    const senhaPadrao = await bcrypt.hash('Senha123', 10)
+    await db.query(
       `INSERT INTO alunos (nome, cpf, email, senha) VALUES 
-       ('João Silva', '11122233344', 'joao@ifnmg.edu.br', ?),
-       ('Maria Oliveira', '22233344455', 'maria@ifnmg.edu.br', ?)`,
-      [senhaPadrao, senhaPadrao]
+       ('Chines Porto', '11122233344', 'chines@aluno.ifnmg.edu.br', ?),
+       ('Gabriel Martins', '22233344455', 'gabriel@aluno.ifnmg.edu.br', ?),
+       ('Joaquim Silva', '33344455566', 'joaquim@aluno.ifnmg.edu.br', ?),
+       ('Maria Oliveira', '44455566677', 'maria@ifnmg.edu.br', ?),
+       ('Ana Souza', '55566677788', 'ana@aluno.ifnmg.edu.br', ?),
+       ('Pedro Costa', '66677788899', 'pedro@ifnmg.edu.br', ?),
+       ('Lucas Santos', '77788899900', 'lucas@aluno.ifnmg.edu.br', ?),
+       ('Carolina Almeida', '88899900011', 'carolina@ifnmg.edu.br', ?),
+       ('Fernanda Oliveira', '99900011122', 'fernanda@aluno.ifnmg.edu.br', ?)`,
+      [
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+        senhaPadrao,
+      ]
     )
 
-    // Cadastra disciplinas
-    const [disciplinas] = await db.query(
+    await db.query(
       `INSERT INTO disciplinas (nome, semestre) VALUES
-       ('Programação Web', '2023.1'),
-       ('Banco de Dados', '2023.1'),
-       ('Logica Matematica', '2023.1')`
+       ('Programação Web', '1'),
+       ('Banco de Dados', '2'),
+       ('Logica Matematica', '3'),
+       ('Redes de Computadores', '4'),
+       ('Sistemas Operacionais', '5'),
+       ('Engenharia de Software', '6'),
+       ('Inteligência Artificial', '2'),
+       ('Desenvolvimento Móvel', '3'),
+       ('Segurança da Informação', '5')`
     )
 
-    // Cria matrículas
     await db.query(
       `INSERT INTO matriculas (aluno_id, disciplina_id, semestre) VALUES
-       (1, 1, '2023.1'),
-       (1, 2, '2023.1'),
-       (2, 1, '2023.1'),
-       (2, 3, '2023.1')`
+        (1, 1, '1'),
+        (1, 2, '1'),
+        (2, 1, '1'),
+        (2, 3, '1'),
+        (3, 2, '2'),
+        (3, 4, '2'),
+        (4, 5, '3'),
+        (4, 6, '3'),
+        (5, 7, '4'),
+        (5, 8, '4')`
     )
 
-    // Insere notas
     await db.query(
       `INSERT INTO notas (aluno_id, disciplina_id, semestre, nota1, nota2, nota3) VALUES
-       (1, 1, '2023.1', 8.5, 7.0, 9.2),
-       (1, 2, '2023.1', 6.0, 7.5, 8.0),
-       (2, 1, '2023.1', 9.0, 8.5, 9.8),
-       (2, 3, '2023.1', 7.0, 7.5, 8.0)`
+       (1, 1, '1', 7, 8, 9),
+       (1, 2, '1', 1, 3, 7),
+       (2, 1, '1', 7, 4, 3),
+       (2, 3, '1', 8, 4, 7),
+       (3, 2, '2', 7, 8, 9),
+       (3, 4, '2', 1, 2, 5),
+       (4, 5, '3', 9, 3, 4),
+       (4, 6, '3', 7, 8, 9),
+       (5, 7, '4', 3, 5, 7),
+       (5, 8, '4', 7, 8, 9)`
     )
 
     console.log('✅ Banco de dados populado com dados de teste!')
