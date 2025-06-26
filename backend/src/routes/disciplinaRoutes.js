@@ -7,6 +7,7 @@ import { verifyToken } from '../middlewares/authMiddleware.js'
 
 const router = Router()
 
+// Rotas protegidas
 router.get('/', verifyToken, getDisciplinas)
 router.get('/:id', verifyToken, getDisciplinaById)
 

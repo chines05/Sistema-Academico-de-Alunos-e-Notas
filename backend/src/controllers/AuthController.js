@@ -5,7 +5,6 @@ const AuthController = {
   register: async (req, res) => {
     const { nome, email, cpf, senha } = req.body
 
-    // Validações
     if (!nome || !email || !cpf || !senha) {
       return res.status(400).send({ erro: 'Preencha todos os campos' })
     }
@@ -33,7 +32,6 @@ const AuthController = {
     }
 
     try {
-      // Verifica se email ou CPF já existem
       const [user] = await db.query(
         'SELECT id FROM alunos WHERE email = ? OR cpf = ?',
         [email, cpf]
@@ -43,16 +41,13 @@ const AuthController = {
         return res.status(400).send({ erro: 'Email ou CPF já cadastrado' })
       }
 
-      // Hash da senha
       const senhaHash = await hashPassword(senha)
 
-      // Insere no banco
       const [result] = await db.query(
         'INSERT INTO alunos (nome, email, cpf, senha) VALUES (?, ?, ?, ?)',
         [nome, email, cpf, senhaHash]
       )
 
-      // Resposta sem dados sensíveis
       res.status(201).send({
         message: 'Usuário cadastrado com sucesso',
         user: {
@@ -72,13 +67,11 @@ const AuthController = {
   login: async (req, res) => {
     const { email, senha } = req.body
 
-    // Validação básica
     if (!email || !senha) {
       return res.status(400).send({ erro: 'Email e senha são obrigatórios' })
     }
 
     try {
-      // Busca usuário
       const [user] = await db.query(
         'SELECT id, nome, email, senha FROM alunos WHERE email = ?',
         [email]
@@ -88,16 +81,13 @@ const AuthController = {
         return res.status(401).send({ erro: 'Email ou senha inválidos' })
       }
 
-      // Compara senhas
       const senhaValida = await comparePassword(senha, user[0].senha)
       if (!senhaValida) {
         return res.status(401).send({ erro: 'Email ou senha inválidos' })
       }
 
-      // Gera token
       const token = generateToken(user[0].id)
 
-      // Resposta sem dados sensíveis
       res.send({
         message: 'Login realizado com sucesso',
         user: {
@@ -158,7 +148,6 @@ const AuthController = {
     }
 
     try {
-      // Busca usuário
       const [user] = await db.query('SELECT senha FROM alunos WHERE id = ?', [
         id,
       ])
@@ -167,16 +156,13 @@ const AuthController = {
         return res.status(404).send({ erro: 'Usuário não encontrado' })
       }
 
-      // Compara senhas
       const senhaValida = await comparePassword(senhaAtual, user[0].senha)
       if (!senhaValida) {
         return res.status(401).send({ erro: 'Senha atual inválida' })
       }
 
-      // Hash da nova senha
       const novaSenhaHash = await hashPassword(novaSenha)
 
-      // Atualiza no banco
       await db.query('UPDATE alunos SET senha = ? WHERE id = ?', [
         novaSenhaHash,
         id,

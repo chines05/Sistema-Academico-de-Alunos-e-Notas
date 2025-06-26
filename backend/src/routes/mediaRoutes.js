@@ -4,6 +4,7 @@ import { verifyToken } from '../middlewares/authMiddleware.js'
 
 const router = Router()
 
+// Rota protegida
 router.get(
   '/aluno/:alunoId/disciplina/:disciplinaId',
   verifyToken,

@@ -6,17 +6,14 @@ dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET || 'segredo_temporario'
 
-// Gera token JWT
 export const generateToken = (userId) => {
   return jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '1h' })
 }
 
-// Cria hash da senha
 export const hashPassword = async (password) => {
   return await bcrypt.hash(password, 10)
 }
 
-// Compara senha com hash
 export const comparePassword = async (password, hash) => {
   return await bcrypt.compare(password, hash)
 }

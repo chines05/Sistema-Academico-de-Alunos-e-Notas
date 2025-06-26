@@ -8,11 +8,9 @@ const router = Router()
 router.post('/register', AuthController.register)
 router.post('/login', AuthController.login)
 
-// Rota protegida
+// Rotas protegidas
 router.put('/profile/:id/nome', verifyToken, AuthController.profileNome)
 router.put('/profile/:id/senha', verifyToken, AuthController.profileSenha)
-
-// Rota protegida
 router.post('/logout', verifyToken, AuthController.logout)
 
 export default router
