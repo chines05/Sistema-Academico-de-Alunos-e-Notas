@@ -110,7 +110,7 @@ Oferecer uma interface moderna e funcional para que alunos do IFNMG tenham acess
 - **Zod + React-Hook-Form**: validação reativa, declarativa e com boa escalabilidade
 - **MySQL**: banco relacional robusto para o modelo acadêmico
 - **JWT**: gerenciamento de sessão seguro e stateless
-- **Bcript**: utilizado para hash seguro das senhas dos alunos, garantindo que informações sensíveis não fiquem expostas mesmo em caso de vazamento de dados.
+- **Bcrypt**: utilizado para hash seguro das senhas dos alunos, garantindo que informações sensíveis não fiquem expostas mesmo em caso de vazamento de dados.
 
 ## 📦 Execução do Projeto
 
