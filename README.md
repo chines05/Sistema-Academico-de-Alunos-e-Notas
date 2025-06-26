@@ -9,9 +9,9 @@ Aplicativo mobile desenvolvido com React Native, voltado para alunos do Institut
 - Login seguro com e-mail institucional
 - Cadastro com validações de CPF, senha e domínio
 - Autenticação via JWT
-- Navegação por tab bar (Home e Perfil)
+- Navegação por tab bar (Home e Profile)
 - Listagem de disciplinas com filtro por semestre
-- Visualização de notas por disciplina (em progresso)
+- Visualização de notas por disciplina 
 - Exibição e edição de dados do perfil
 - Logout com destruição de sessão
 
@@ -26,14 +26,14 @@ Aplicativo mobile desenvolvido com React Native, voltado para alunos do Institut
 - Toasts com `react-native-toast-message`
 - Ícones com `Ionicons`
 - Tipagem com TypeScript
-- Componentes reutilizáveis (`Input.tsx`, etc.)
+- Componentes reutilizáveis (`Input.tsx`, `Header.tsx`, `toast.tsx`, `CardDisciplina.tsx`)
 
 ### 🔹 Backend (Node.js + Express)
 - MySQL com `mysql2`
 - Autenticação com JWT
 - Hash de senha com bcrypt
 - Verificação de domínio institucional nos e-mails
-- Rotas para autenticação, alunos, matrículas e médias
+- Rotas para autenticação: profile, disciplinas e notas/media
 
 ---
 
@@ -42,8 +42,8 @@ Aplicativo mobile desenvolvido com React Native, voltado para alunos do Institut
 - Apenas e-mails institucionais permitidos:
   - `@aluno.ifnmg.edu.br`
   - `@ifnmg.edu.br`
-- CPF com exatamente 11 dígitos numéricos
-- Senhas com no mínimo 6 caracteres
+- CPF com exatamente 11 dígitos numéricos e verídico
+- Senhas com no mínimo 6 caracteres, uma letra maiuscula e pelo menos um número
 - Confirmação de senha no cadastro
 - Feedback visual em caso de erros (via Toast)
 
@@ -65,7 +65,7 @@ Aplicativo mobile desenvolvido com React Native, voltado para alunos do Institut
 - Saudação com o primeiro nome do aluno
 - Lista de disciplinas com:
   - Nome
-  - Semestre (ex: `2025/1º semestre`)
+  - Semestre (ex: `1º semestre`)
   - Botão “Ver notas”
 - Filtro de semestre via `Picker`
 - Integração com rota: `GET /matriculas/aluno/:id`
@@ -76,7 +76,7 @@ Aplicativo mobile desenvolvido com React Native, voltado para alunos do Institut
 
 - Exibição dos dados do aluno: nome, email, matrícula
 - Edição de nome e senha
-- Integração com rotas: `PUT /auth/profile/:id/nome or senha`
+- Integração com rotas: `PUT /auth/profile/:id/nome ou senha`
 - Botão “Sair da conta”
 - Integração com rota: `POST /auth/logout`
 
@@ -107,10 +107,10 @@ Oferecer uma interface moderna e funcional para que alunos do IFNMG tenham acess
 ### 🧠 Decisões Técnicas
 
 - **Expo + React Native**: agilidade e simplicidade no ciclo de desenvolvimento mobile
-- **Zod + RHF**: validação reativa, declarativa e com boa escalabilidade
+- **Zod + React-Hook-Form**: validação reativa, declarativa e com boa escalabilidade
 - **MySQL**: banco relacional robusto para o modelo acadêmico
 - **JWT**: gerenciamento de sessão seguro e stateless
-- **Verificação de domínio no backend e frontend**: garante exclusividade para alunos da instituição
+- **Bcript**: utilizado para hash seguro das senhas dos alunos, garantindo que informações sensíveis não fiquem expostas mesmo em caso de vazamento de dados.
 
 ## 📦 Execução do Projeto
 
