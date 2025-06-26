@@ -60,8 +60,10 @@ const Register = () => {
 
       navigation.navigate('Login')
     } catch (error: any) {
-      Alert.alert('Erro', error.response?.data?.erro || 'Falha no cadastro')
-      console.error('Erro no cadastro:', error)
+      Toast.show({
+        type: 'error',
+        text1: error || 'Erro ao cadastrar',
+      })
     } finally {
       setLoading(false)
     }
