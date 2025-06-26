@@ -4,6 +4,7 @@ import Login from 'src/pages/Login'
 import Register from 'src/pages/Register'
 import Disciplina from 'src/pages/Disciplina'
 import AppTabs from 'src/app/routes/AppTabs'
+import ForgotPassword from 'src/pages/ForgotPassword'
 
 const Stack = createNativeStackNavigator()
 
@@ -13,6 +14,7 @@ const Routes = () => (
     <Stack.Screen name="Register" component={Register} />
     <Stack.Screen name="AppTabs" component={AppTabs} />
     <Stack.Screen name="Disciplina" component={Disciplina} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
   </Stack.Navigator>
 )
 

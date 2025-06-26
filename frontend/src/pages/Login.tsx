@@ -151,6 +151,13 @@ const Login = () => {
               <Text style={styles.linkTextBold}>Crie sua conta</Text>
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ForgotPassword')}
+            style={styles.forgotPasswordLink}
+            activeOpacity={0.6}
+          >
+            <Text style={styles.linkText}>Esqueceu sua senha?</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -230,12 +237,16 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: '#666',
-    fontSize: 14,
+    fontSize: 18,
   },
   linkTextBold: {
     color: colors.vermelho,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+  forgotPasswordLink: {
+    marginTop: 15,
+    alignSelf: 'center',
   },
   footer: {
     paddingVertical: 15,

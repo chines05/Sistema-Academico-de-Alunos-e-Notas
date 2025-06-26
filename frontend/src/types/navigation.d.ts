@@ -23,6 +23,7 @@ declare global {
         user: UserType
         token: string
       }
+      ForgotPassword: undefined
     }
   }
 }
