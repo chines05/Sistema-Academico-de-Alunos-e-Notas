@@ -1,5 +1,6 @@
 import db from '../config/database.js'
 import { hashPassword, comparePassword, generateToken } from '../utils/auth.js'
+import { validarCPF } from '../utils/cpfValidator.js'
 
 const AuthController = {
   register: async (req, res) => {
@@ -13,6 +14,10 @@ const AuthController = {
       return res
         .status(400)
         .send({ erro: 'CPF inválido (deve ter 11 dígitos)' })
+    }
+
+    if (!validarCPF(cpf)) {
+      return res.status(400).send({ erro: 'CPF inválido' })
     }
 
     const emailValido = /^[^\s@]+@(aluno\.ifnmg\.edu\.br|ifnmg\.edu\.br)$/.test(
