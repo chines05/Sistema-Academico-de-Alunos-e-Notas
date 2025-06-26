@@ -16,6 +16,22 @@ const AuthController = {
         .send({ erro: 'CPF inválido (deve ter 11 dígitos)' })
     }
 
+    const emailValido = /^[^\s@]+@(aluno\.ifnmg\.edu\.br|ifnmg\.edu\.br)$/.test(
+      email
+    )
+
+    if (!emailValido) {
+      return res.status(400).send({
+        erro: 'Use um email institucional (@aluno.ifnmg.edu.br ou @ifnmg.edu.br)',
+      })
+    }
+
+    if (senha.length < 6) {
+      return res
+        .status(400)
+        .send({ erro: 'Senha deve ter pelo menos 6 caracteres' })
+    }
+
     try {
       // Verifica se email ou CPF já existem
       const [user] = await db.query(
