@@ -5,13 +5,9 @@ export const colors = {
   vermelho: '#cd191e',
   vermelhoEscuro: '#a00',
   vermelhoClaro: '#f8d7da',
-  azul: '#007bff',
-  azulClaro: '#cfe2ff',
   preto: '#000000',
   branco: '#FFFFFF',
   cinza: '#9E9E9E',
   cinzaEscuro: '#757575',
   cinzaClaro: '#F5F5F5',
-  amarelo: '#ffc107',
-  amareloClaro: '#fff3cd',
 }

@@ -162,7 +162,7 @@ const Home = () => {
               />
               <Text style={styles.emptyTitle}>
                 {semestreSelecionado === 'Todos'
-                  ? 'Nenhuma matrícula encontrada'
+                  ? 'Nenhuma disciplina encontrada'
                   : `Nenhuma matrícula em ${semestreSelecionado}`}
               </Text>
               <Text style={styles.emptyText}>
