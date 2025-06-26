@@ -9,19 +9,18 @@ export const getMediasAluno = async (req, res) => {
       SELECT 
         d.id AS disciplina_id,
         d.nome AS disciplina_nome,
-        d.semestre,
         n.nota1,
         n.nota2,
         n.nota3,
         ROUND((n.nota1 + n.nota2 + n.nota3) / 3, 1) AS media,
         CASE 
-          WHEN (n.nota1 + n.nota2 + n.nota3) / 3 >= 6 THEN 'Aprovado'
-          ELSE 'Reprovado'
+          WHEN (n.nota1 + n.nota2 + n.nota3) / 3 >= 6 THEN 'aprovado'
+          ELSE 'reprovado'
         END AS status
       FROM notas n
       JOIN disciplinas d ON n.disciplina_id = d.id
       WHERE n.aluno_id = ? AND n.disciplina_id = ?
-      ORDER BY d.semestre, d.nome
+      LIMIT 1
     `,
       [alunoId, disciplinaId]
     )
@@ -32,7 +31,18 @@ export const getMediasAluno = async (req, res) => {
       })
     }
 
-    res.status(200).send(medias)
+    const m = medias[0]
+
+    res.status(200).send({
+      disciplina: {
+        id: m.disciplina_id,
+        nome: m.disciplina_nome,
+      },
+      media: {
+        media: m.media,
+        status: m.status,
+      },
+    })
   } catch (error) {
     console.error('Erro ao calcular médias:', error)
     res.status(500).send({

@@ -14,12 +14,23 @@ export const getNotasDisciplina = async (req, res) => {
     )
 
     if (!notas.length) {
-      return res.status(404).send({ message: 'Notas não encontradas' })
+      return res.status(404).send({ erro: 'Notas não encontradas' })
+    }
+
+    const [disciplinaRows] = await db.query(
+      `SELECT nome FROM disciplinas WHERE id = ?`,
+      [disciplinaId]
+    )
+
+    if (!disciplinaRows.length) {
+      return res.status(404).send({ erro: 'Disciplina não encontrada' })
     }
 
     res.send({
-      alunoId,
-      disciplinaId,
+      disciplina: {
+        id: disciplinaId,
+        nome: disciplinaRows[0].nome,
+      },
       notas: notas[0],
     })
   } catch (error) {
