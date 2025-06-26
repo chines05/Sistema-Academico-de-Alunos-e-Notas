@@ -75,18 +75,18 @@ Aplicativo mobile desenvolvido com React Native, voltado para alunos do Institut
 ## 👤 Perfil
 
 - Exibição dos dados do aluno: nome, email, matrícula
-- UI pronta para edição de nome e senha
+- Edição de nome e senha
+- Integração com rotas: `PUT /auth/profile/:id/nome or senha`
 - Botão “Sair da conta”
 - Integração com rota: `POST /auth/logout`
 
 ---
 
-## 📚 Tela de Disciplina (em desenvolvimento)
+## 📚 Tela de Disciplina
 
-- Exibição de Notas: N1, N2, N3
-- Cálculo da média e status (Aprovado / Reprovado)
-- Integração com rota:
-  `GET /medias/aluno/:alunoId/disciplina/:disciplinaId`
+- Visualização de Notas: N1, N2, N3
+- Cálculo e exibição da média final
+- Indicação de status: Aprovado / Reprovado
 
 ---
 
@@ -111,18 +111,6 @@ Oferecer uma interface moderna e funcional para que alunos do IFNMG tenham acess
 - **MySQL**: banco relacional robusto para o modelo acadêmico
 - **JWT**: gerenciamento de sessão seguro e stateless
 - **Verificação de domínio no backend e frontend**: garante exclusividade para alunos da instituição
-
----
-
-## 🚧 Em Desenvolvimento
-
-- Tela de detalhes da disciplina
-- Edição de nome e senha diretamente no perfil
-- Persistência do login com AsyncStorage
-- SplashScreen institucional
-- Testes unitários e E2E
-
----
 
 ## 📦 Execução do Projeto
 
