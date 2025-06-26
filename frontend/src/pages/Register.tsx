@@ -62,7 +62,7 @@ const Register = () => {
     } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: error || 'Erro ao cadastrar',
+        text1: error.response?.data?.erro || 'Erro ao cadastrar',
       })
     } finally {
       setLoading(false)
