@@ -30,10 +30,11 @@ import Header from '../components/Header'
 const Profile = () => {
   const route = useRoute()
   const navigation = useNavigation()
-  const { user, token } = route.params as HomeProps
+  const { user: initialUser, token } = route.params as HomeProps
   const [editingName, setEditingName] = useState(false)
   const [editingPassword, setEditingPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState(initialUser)
 
   const {
     control: profileControl,
@@ -84,12 +85,12 @@ const Profile = () => {
     }
   }
 
-  const updateProfile = async (data: ProfileFormData) => {
+  const updateProfileNome = async (data: ProfileFormData) => {
     setLoading(true)
     try {
-      const response = await api.put(
-        `/usuarios/${user.id}`,
-        { nome: data.nome },
+      const { data: response } = await api.put(
+        `/auth/profile/${user.id}/nome`,
+        data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,15 +98,28 @@ const Profile = () => {
         }
       )
 
+      const usuarioAtualizado = { ...user, nome: data.nome }
+      setUser(usuarioAtualizado)
+
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'AppTabs',
+            params: { user: usuarioAtualizado, token },
+          },
+        ],
+      })
+
       Toast.show({
         type: 'success',
-        text1: 'Perfil atualizado com sucesso!',
+        text1: response.message || 'Perfil atualizado com sucesso!',
       })
       setEditingName(false)
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: 'Erro ao atualizar perfil',
+        text1: error.response?.data?.erro || 'Erro ao atualizar perfil',
       })
     } finally {
       setLoading(false)
@@ -116,7 +130,7 @@ const Profile = () => {
     setLoading(true)
     try {
       await api.put(
-        `/usuarios/${user.id}/senha`,
+        `/auth/profile/${user.id}/senha`,
         {
           senhaAtual: data.senhaAtual,
           novaSenha: data.novaSenha,
@@ -134,11 +148,10 @@ const Profile = () => {
       })
       setEditingPassword(false)
       resetPasswordForm()
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: 'Erro ao alterar senha',
-        text2: 'Verifique sua senha atual',
+        text1: error.response?.data?.erro || 'Erro ao alterar senha',
       })
     } finally {
       setLoading(false)
@@ -199,7 +212,7 @@ const Profile = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.saveButton]}
-                  onPress={handleProfileSubmit(updateProfile)}
+                  onPress={handleProfileSubmit(updateProfileNome)}
                   disabled={loading}
                 >
                   {loading ? (
@@ -305,7 +318,7 @@ const Profile = () => {
                   {loading ? (
                     <ActivityIndicator color="white" />
                   ) : (
-                    <Text style={styles.buttonText}>Alterar senha</Text>
+                    <Text style={styles.buttonText}>Salvar</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -404,11 +417,12 @@ const styles = StyleSheet.create({
   },
   formButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginBottom: 20,
   },
   button: {
     padding: 15,
+    width: 120,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',

@@ -21,7 +21,8 @@ import Header from '../components/Header'
 
 const Home = () => {
   const route = useRoute()
-  const { user, token } = route.params as HomeProps
+  const { user: userParam, token } = route.params as HomeProps
+  const [user, setUser] = useState(userParam)
   const [disciplinas, setDisciplinas] = useState<MatriculasResponseType | null>(
     null
   )
@@ -30,6 +31,10 @@ const Home = () => {
   const [semestreSelecionado, setSemestreSelecionado] =
     useState<string>('Todos')
   const navigation = useNavigation()
+
+  useEffect(() => {
+    setUser(userParam)
+  }, [userParam])
 
   const handleVerNotas = (disciplinaId: number, disciplinaNome: string) => {
     navigation.navigate('Disciplina', {

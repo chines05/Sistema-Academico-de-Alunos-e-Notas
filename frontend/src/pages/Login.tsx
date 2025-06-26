@@ -34,7 +34,7 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: 'chines@aluno.ifnmg.edu.br',
-      senha: 'chines05',
+      senha: 'Chines05',
     },
   })
 
