@@ -1,19 +1,19 @@
 # 🎓 Sistema Acadêmico IFNMG
 
-Aplicativo mobile desenvolvido com React Native, destinado a alunos do Instituto Federal (IFNMG), com autenticação, listagem de disciplinas, visualização de notas e gerenciamento de perfil.
+Aplicativo mobile desenvolvido com React Native, voltado para alunos do Instituto Federal do Norte de Minas Gerais (IFNMG), com funcionalidades de autenticação, visualização de disciplinas, notas e gerenciamento de perfil.
 
 ---
 
 ## 📱 Funcionalidades
 
-- **Login seguro com validação de e-mail institucional**
-- **Cadastro de alunos com validações de CPF, senha e domínio**
-- **Autenticação via JWT**
-- **Navegação com Tab Bar inferior (Home | Perfil)**
-- **Listagem de disciplinas matriculadas com filtro por semestre**
-- **Visualização de notas por disciplina (em progresso)**
-- **Exibição e edição de dados do perfil**
-- **Logout com destruição de sessão**
+- Login seguro com e-mail institucional
+- Cadastro com validações de CPF, senha e domínio
+- Autenticação via JWT
+- Navegação por tab bar (Home e Perfil)
+- Listagem de disciplinas com filtro por semestre
+- Visualização de notas por disciplina (em progresso)
+- Exibição e edição de dados do perfil
+- Logout com destruição de sessão
 
 ---
 
@@ -21,92 +21,128 @@ Aplicativo mobile desenvolvido com React Native, destinado a alunos do Instituto
 
 ### 🔹 Mobile (React Native + Expo)
 - React Navigation (Stack & Bottom Tabs)
-- Axios
-- React Hook Form + Zod
+- React Hook Form + Zod (validação)
+- Axios (requisições HTTP)
 - Toasts com `react-native-toast-message`
 - Ícones com `Ionicons`
 - Tipagem com TypeScript
-- Componentes reaproveitáveis (ex: `Input.tsx`)
+- Componentes reutilizáveis (`Input.tsx`, etc.)
 
 ### 🔹 Backend (Node.js + Express)
 - MySQL com `mysql2`
 - Autenticação com JWT
-- Criptografia de senha com bcrypt
+- Hash de senha com bcrypt
 - Verificação de domínio institucional nos e-mails
-- Rotas de alunos, matrículas e notas
+- Rotas para autenticação, alunos, matrículas e médias
 
 ---
 
-## 🔐 Validações
+## 🔐 Validações Aplicadas
 
-- Apenas emails institucionais permitidos:
+- Apenas e-mails institucionais permitidos:
   - `@aluno.ifnmg.edu.br`
   - `@ifnmg.edu.br`
-- CPF: exatamente 11 dígitos numéricos
-- Senha: mínimo de 6 caracteres
+- CPF com exatamente 11 dígitos numéricos
+- Senhas com no mínimo 6 caracteres
 - Confirmação de senha no cadastro
-- Toasts visuais para feedback ao usuário
+- Feedback visual em caso de erros (via Toast)
 
 ---
 
-## 🧭 Navegação
+## 🧭 Navegação e Rotas
 
 | Rota         | Descrição                          | Protegida |
 |--------------|-------------------------------------|-----------|
 | `/login`     | Tela de autenticação               | ❌        |
 | `/register`  | Cadastro de novos alunos           | ❌        |
-| `AppTabs`    | TabBar com “Home” e “Perfil”       | ✅        |
-| `/disciplina`| Tela com detalhes das notas        | ✅        |
+| `AppTabs`    | Tab bar com telas de Home e Perfil | ✅        |
+| `/disciplina`| Tela de detalhes da disciplina     | ✅        |
 
 ---
 
 ## 🏠 Home
 
-- Saudação com nome e avatar
-- Listagem de disciplinas com:
+- Saudação com o primeiro nome do aluno
+- Lista de disciplinas com:
   - Nome
   - Semestre (ex: `2025/1º semestre`)
   - Botão “Ver notas”
-- Filtro de semestre com Picker estilizado
+- Filtro de semestre via `Picker`
 - Integração com rota: `GET /matriculas/aluno/:id`
 
 ---
 
 ## 👤 Perfil
 
-- Dados do aluno: nome, email, matrícula
-- Edição de nome (UI pronta)
-- Alteração de senha (UI pronta)
-- Logout com reset da navegação
+- Exibição dos dados do aluno: nome, email, matrícula
+- UI pronta para edição de nome e senha
+- Botão “Sair da conta”
 - Integração com rota: `POST /auth/logout`
 
 ---
 
-## 📚 Tela Disciplina (em desenvolvimento)
+## 📚 Tela de Disciplina (em desenvolvimento)
 
-- Exibição de notas (N1, N2, N3)
-- Média e status (Aprovado/Reprovado)
-- Rota de integração: `GET /medias/aluno/:alunoId/disciplina/:disciplinaId`
+- Exibição de Notas: N1, N2, N3
+- Cálculo da média e status (Aprovado / Reprovado)
+- Integração com rota:
+  `GET /medias/aluno/:alunoId/disciplina/:disciplinaId`
 
 ---
 
-## 📦 Instalação e Execução
+## 📌 Análise de Requisitos e Decisões Técnicas
+
+### 🎯 Objetivo
+
+Oferecer uma interface moderna e funcional para que alunos do IFNMG tenham acesso facilitado às suas informações acadêmicas, com segurança e responsividade.
+
+### ✅ Requisitos Atendidos
+
+- Autenticação protegida com JWT
+- Navegação segura e tipada
+- Integração com banco de dados relacional
+- Feedback visual durante todo o fluxo
+- Design alinhado à identidade institucional do IFNMG
+
+### 🧠 Decisões Técnicas
+
+- **Expo + React Native**: agilidade e simplicidade no ciclo de desenvolvimento mobile
+- **Zod + RHF**: validação reativa, declarativa e com boa escalabilidade
+- **MySQL**: banco relacional robusto para o modelo acadêmico
+- **JWT**: gerenciamento de sessão seguro e stateless
+- **Verificação de domínio no backend e frontend**: garante exclusividade para alunos da instituição
+
+---
+
+## 🚧 Em Desenvolvimento
+
+- Tela de detalhes da disciplina
+- Edição de nome e senha diretamente no perfil
+- Persistência do login com AsyncStorage
+- SplashScreen institucional
+- Testes unitários e E2E
+
+---
+
+## 📦 Execução do Projeto
 
 ```bash
-# Instalar dependências
-npm install
+# Clonando o repositório
+git clone https://github.com/chines05/Sistema-Academico-de-Alunos-e-Notas.git
+cd Sistema-Academico-de-Alunos-e-Notas
 
-# Rodar app com Expo
-npx expo start
+# Instalando e executando o app mobile (Expo)
+cd frontend
+npm install        # ou yarn
+npx expo start     # inicia o app no modo de desenvolvimento
 
-# Rodar backend (em outro terminal)
-npm run dev
-```
+# Escaneie o QR Code com o Expo Go no celular ou use um emulador Android/iOS
+# Certifique-se de que o backend está rodando antes de fazer login
 
-## ✅ Testado e validado com
+# Instalando e executando o backend (Node + MySQL)
+cd backend
+npm install        # ou yarn
+npm run dev        # ou yarn dev
 
-- Tokens persistentes
-- Fluxo completo de autenticação
-- Navegação protegida
-- Feedback visual (erros e sucesso)
-- UX acessível e responsiva
+# Verifique se o .env está corretamente configurado (porta, senha do MySQL, JWT_SECRET, etc.)
+# O banco de dados deve estar criado com as tabelas necessárias
