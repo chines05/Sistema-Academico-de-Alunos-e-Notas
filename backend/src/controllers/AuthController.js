@@ -123,6 +123,71 @@ const AuthController = {
       res.status(500).send({ erro: 'Erro no servidor' })
     }
   },
+
+  profileNome: async (req, res) => {
+    const { id } = req.params
+    const { nome } = req.body
+
+    if (!nome) {
+      return res.status(400).send({ erro: 'Nome é obrigatório' })
+    }
+
+    try {
+      await db.query('UPDATE alunos SET nome = ? WHERE id = ?', [nome, id])
+      res.send({ message: 'Nome atualizado com sucesso' })
+    } catch (error) {
+      console.error('Erro ao atualizar nome:', error)
+      res.status(500).send({ erro: 'Erro no servidor' })
+    }
+  },
+
+  profileSenha: async (req, res) => {
+    const { id } = req.params
+    const { senhaAtual, novaSenha } = req.body
+
+    if (!senhaAtual || !novaSenha) {
+      return res
+        .status(400)
+        .send({ erro: 'Senha atual e nova senha são obrigatórias' })
+    }
+
+    if (novaSenha.length < 6) {
+      return res
+        .status(400)
+        .send({ erro: 'Nova senha deve ter pelo menos 6 caracteres' })
+    }
+
+    try {
+      // Busca usuário
+      const [user] = await db.query('SELECT senha FROM alunos WHERE id = ?', [
+        id,
+      ])
+
+      if (user.length === 0) {
+        return res.status(404).send({ erro: 'Usuário não encontrado' })
+      }
+
+      // Compara senhas
+      const senhaValida = await comparePassword(senhaAtual, user[0].senha)
+      if (!senhaValida) {
+        return res.status(401).send({ erro: 'Senha atual inválida' })
+      }
+
+      // Hash da nova senha
+      const novaSenhaHash = await hashPassword(novaSenha)
+
+      // Atualiza no banco
+      await db.query('UPDATE alunos SET senha = ? WHERE id = ?', [
+        novaSenhaHash,
+        id,
+      ])
+
+      res.send({ message: 'Senha atualizada com sucesso' })
+    } catch (error) {
+      console.error('Erro ao atualizar senha:', error)
+      res.status(500).send({ erro: 'Erro no servidor' })
+    }
+  },
 }
 
 export default AuthController
