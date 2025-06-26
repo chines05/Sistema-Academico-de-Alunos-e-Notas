@@ -36,12 +36,17 @@ const Home = () => {
     setUser(userParam)
   }, [userParam])
 
-  const handleVerNotas = (disciplinaId: number, disciplinaNome: string) => {
+  const handleVerNotas = (
+    disciplinaId: number,
+    disciplinaNome: string,
+    semestre: number
+  ) => {
     navigation.navigate('Disciplina', {
       user,
       disciplina: {
         id: disciplinaId,
         nome: disciplinaNome,
+        semestre: semestre,
       },
       token,
     })

@@ -14,6 +14,7 @@ export type HomeProps = {
   disciplina: {
     id: number
     nome: string
+    semestre: number
   }
 }
 
@@ -28,9 +29,28 @@ export type MatriculaType = {
   semestre: number
 }
 
-export type NotaDisciplinaAlunoType = {
-  alunoId: number
-  disciplinaId: number
+export type MediaDisciplinaType = {
+  disciplina: DisciplinaType
+  media: MediaType
+}
+
+export type DisciplinaType = {
+  id: number
+  nome: string
+}
+
+export type MediaType = {
+  media: number
+  status: 'aprovado' | 'reprovado'
+}
+
+enum Status {
+  APROVADO = 'aprovado',
+  REPROVADO = 'reprovado',
+}
+
+export type NotasDisciplinaType = {
+  disciplina: DisciplinaType
   notas: NotaType
 }
 

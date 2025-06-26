@@ -17,7 +17,9 @@ const CardDisplina = ({ disciplina, handleVerNotas }: any) => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleVerNotas(disciplina.id, disciplina.nome)}
+        onPress={() =>
+          handleVerNotas(disciplina.id, disciplina.nome, disciplina.semestre)
+        }
       >
         <Text style={styles.buttonText}>Ver notas</Text>
         <Ionicons name="chevron-forward" size={20} color="white" />
