@@ -19,7 +19,7 @@ import {
 } from 'src/types/types'
 import { colors } from 'src/utils/colors'
 import Header from 'src/components/Header'
-
+;('')
 const Disciplina = () => {
   const route = useRoute()
   const navigation = useNavigation()
@@ -49,7 +49,7 @@ const Disciplina = () => {
         setNotasUser(notasResponse.data)
       } catch (error: any) {
         setError(
-          error.response?.data?.erro || 'Erro ao carregar dados da disciplina'
+          error.response?.data?.erro || 'Voce nao possui notas nesta disciplina'
         )
         Toast.show({
           type: 'error',
@@ -80,22 +80,63 @@ const Disciplina = () => {
         <Text style={styles.loadingText}>
           Carregando dados da disciplina...
         </Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={20} color={colors.verde} />
+          <Text style={styles.backButtonText}>Voltar para Disciplinas</Text>
+        </TouchableOpacity>
       </View>
     )
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.error}>{error}</Text>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.scrollContainer,
+            styles.emptyScrollContainer,
+          ]}
         >
-          <Ionicons name="arrow-back" size={20} color={colors.verde} />
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
-      </View>
+          <Header title={disciplina.nome} />
+
+          <View style={styles.emptyContainer}>
+            <Ionicons
+              name="alert-circle-outline"
+              size={60}
+              color={colors.vermelho}
+              style={styles.emptyIcon}
+            />
+            <Text style={styles.emptyTitle}>Ops! Algo deu errado</Text>
+            <Text style={styles.emptyText}>{error}</Text>
+
+            <TouchableOpacity
+              style={styles.emptyButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={20} color={colors.branco} />
+              <Text style={styles.emptyButtonText}>
+                Voltar para disciplinas
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.emptySecondaryButton}
+              onPress={() => {
+                setError(null)
+                setLoading(true)
+              }}
+            >
+              <Ionicons name="refresh" size={20} color={colors.verde} />
+              <Text style={styles.emptySecondaryButtonText}>
+                Tentar novamente
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     )
   }
 
@@ -312,6 +353,67 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: colors.verde,
     fontSize: 16,
+    marginLeft: 8,
+  },
+  emptyScrollContainer: {
+    justifyContent: 'center',
+    flex: 1,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+    marginTop: 20,
+  },
+  emptyIcon: {
+    opacity: 0.7,
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: colors.vermelho,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 30,
+  },
+  emptyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.vermelho,
+    padding: 15,
+    borderRadius: 8,
+    width: '80%',
+    marginBottom: 15,
+  },
+  emptyButtonText: {
+    color: colors.branco,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  emptySecondaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.verde,
+    width: '80%',
+  },
+  emptySecondaryButtonText: {
+    color: colors.verde,
+    fontSize: 16,
+    fontWeight: 'bold',
     marginLeft: 8,
   },
 })
