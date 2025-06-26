@@ -1,9 +1,9 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Login from '../../pages/Login'
-import Register from '../../pages/Register'
-import Disciplina from '../../pages/Disciplina'
-import AppTabs from './AppTabs'
+import Login from 'src/pages/Login'
+import Register from 'src/pages/Register'
+import Disciplina from 'src/pages/Disciplina'
+import AppTabs from 'src/app/routes/AppTabs'
 
 const Stack = createNativeStackNavigator()
 

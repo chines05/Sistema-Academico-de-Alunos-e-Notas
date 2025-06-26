@@ -6,20 +6,19 @@ import {
   ScrollView,
   ActivityIndicator,
   SafeAreaView,
-  Dimensions,
   TouchableOpacity,
 } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
-import api from '../utils/api'
+import api from 'src/utils/api'
 import Toast from 'react-native-toast-message'
 import {
   HomeProps,
   MediaDisciplinaType,
   NotasDisciplinaType,
-} from '../types/types'
-import { colors } from '../utils/colors'
-import Header from '../components/Header'
+} from 'src/types/types'
+import { colors } from 'src/utils/colors'
+import Header from 'src/components/Header'
 
 const Disciplina = () => {
   const route = useRoute()

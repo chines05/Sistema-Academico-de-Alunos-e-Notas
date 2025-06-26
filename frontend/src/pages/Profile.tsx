@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
@@ -15,17 +14,17 @@ import { Ionicons } from '@expo/vector-icons'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Toast from 'react-native-toast-message'
-import api from '../utils/api'
-import { colors } from '../utils/colors'
-import { HomeProps } from '../types/types'
-import Input from '../components/Input'
+import api from 'src/utils/api'
+import { colors } from 'src/utils/colors'
+import { HomeProps } from 'src/types/types'
+import Input from 'src/components/Input'
 import {
   profileSchema,
   ProfileFormData,
   passwordSchema,
   PasswordFormData,
-} from '../schemas/profileSchema'
-import Header from '../components/Header'
+} from 'src/schemas/profileSchema'
+import Header from 'src/components/Header'
 
 const Profile = () => {
   const route = useRoute()

@@ -1,7 +1,13 @@
-import React from 'react'
-import { View, TextInput, Text, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { colors } from '../utils/colors'
+import { colors } from 'src/utils/colors'
 
 interface InputProps {
   placeholder: string
@@ -22,8 +28,11 @@ const Input = ({
   onBlur,
   error,
   icon,
+  secureTextEntry = false,
   ...props
 }: InputProps) => {
+  const [showPassword, setShowPassword] = useState(false)
+
   return (
     <View style={styles.container}>
       <View style={[styles.inputContainer, error && styles.inputError]}>
@@ -42,9 +51,22 @@ const Input = ({
           onChangeText={onChangeText}
           onBlur={onBlur}
           style={[styles.input, error && styles.inputErrorText]}
+          secureTextEntry={secureTextEntry && !showPassword}
           {...props}
         />
-        {error && (
+        {secureTextEntry && (
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.eyeIcon}
+          >
+            <Ionicons
+              name={showPassword ? 'eye-off' : 'eye-outline'}
+              size={20}
+              color="#666"
+            />
+          </TouchableOpacity>
+        )}
+        {error && !secureTextEntry && (
           <Ionicons
             name="alert-circle"
             size={18}
@@ -87,6 +109,9 @@ const styles = StyleSheet.create({
   },
   inputErrorText: {
     color: colors.vermelho,
+  },
+  eyeIcon: {
+    marginLeft: 10,
   },
   errorIcon: {
     marginLeft: 10,

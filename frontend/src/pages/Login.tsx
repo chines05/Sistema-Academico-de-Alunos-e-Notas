@@ -12,11 +12,11 @@ import {
 } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, LoginFormData } from '../schemas/loginSchema'
-import api from '../utils/api'
+import { loginSchema, LoginFormData } from 'src/schemas/loginSchema'
+import api from 'src/utils/api'
 import { useNavigation } from '@react-navigation/native'
-import Input from '../components/Input'
-import { colors } from '../utils/colors'
+import Input from 'src/components/Input'
+import { colors } from 'src/utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 import Toast from 'react-native-toast-message'
 import * as Animatable from 'react-native-animatable'
@@ -79,7 +79,7 @@ const Login = () => {
       <View style={styles.content}>
         <Animatable.View animation="zoomIn" delay={200} style={styles.header}>
           <Image
-            source={require('../assets/imgs/logo-ifnmg-almenara.jpg')}
+            source={require('src/assets/imgs/logo-ifnmg-almenara.jpg')}
             style={styles.logo}
             resizeMode="contain"
           />

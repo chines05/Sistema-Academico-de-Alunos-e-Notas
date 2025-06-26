@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { colors } from '../utils/colors'
+import { colors } from 'src/utils/colors'
 
 const Header = ({ title }: { title: string }) => {
   return (

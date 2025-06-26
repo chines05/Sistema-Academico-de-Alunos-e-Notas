@@ -4,20 +4,19 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   SafeAreaView,
   ActivityIndicator,
 } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
-import { HomeProps, MatriculasResponseType } from '../types/types'
-import { colors } from '../utils/colors'
+import { HomeProps, MatriculasResponseType } from 'src/types/types'
+import { colors } from 'src/utils/colors'
 import Toast from 'react-native-toast-message'
-import api from '../utils/api'
+import api from 'src/utils/api'
 
-import CardDisciplina from '../components/Home/CardDisplina'
-import Header from '../components/Header'
+import CardDisciplina from 'src/components/Home/CardDisplina'
+import Header from 'src/components/Header'
 
 const Home = () => {
   const route = useRoute()

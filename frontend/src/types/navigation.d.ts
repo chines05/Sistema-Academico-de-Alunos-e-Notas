@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { UserType } from './types'
+import { UserType } from 'src/types/types'
 
 declare global {
   namespace ReactNavigation {
