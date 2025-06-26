@@ -1,6 +1,6 @@
 import Routes from './src/app/routes/'
 import { NavigationContainer } from '@react-navigation/native'
-import { ToastWrapper } from './src/utils/toast'
+import { ToastWrapper } from './src/components/toast'
 
 export default function App() {
   return (

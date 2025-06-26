@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   Image,
   SafeAreaView,
@@ -17,6 +16,9 @@ import { colors } from '../utils/colors'
 import Toast from 'react-native-toast-message'
 import api from '../utils/api'
 
+import CardDisciplina from '../components/Home/CardDisplina'
+import Header from '../components/Header'
+
 const Home = () => {
   const route = useRoute()
   const { user, token } = route.params as HomeProps
@@ -29,10 +31,13 @@ const Home = () => {
     useState<string>('Todos')
   const navigation = useNavigation()
 
-  const handleVerNotas = (disciplinaId: number) => {
+  const handleVerNotas = (disciplinaId: number, disciplinaNome: string) => {
     navigation.navigate('Disciplina', {
       user,
-      disciplinaId,
+      disciplina: {
+        id: disciplinaId,
+        nome: disciplinaNome,
+      },
       token,
     })
   }
@@ -95,14 +100,7 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Image
-            source={require('../assets/imgs/logo-ifnmg-almenara.jpg')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.title}>Sistema Acadêmico</Text>
-        </View>
+        <Header title="Minhas Disciplinas" />
 
         <View style={styles.greetingContainer}>
           <Text style={styles.greeting}>
@@ -138,25 +136,11 @@ const Home = () => {
         <View style={styles.disciplinasContainer}>
           {disciplinasFiltradas && disciplinasFiltradas.length > 0 ? (
             disciplinasFiltradas.map((disciplina) => (
-              <View key={disciplina.id} style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <Ionicons name="book" size={24} color={colors.verde} />
-                  <View style={styles.disciplinaInfo}>
-                    <Text style={styles.disciplinaNome}>{disciplina.nome}</Text>
-                    <Text style={styles.disciplinaSemestre}>
-                      {disciplina.semestre} º semestre
-                    </Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => handleVerNotas(disciplina.id)}
-                >
-                  <Text style={styles.buttonText}>Ver notas</Text>
-                  <Ionicons name="chevron-forward" size={20} color="white" />
-                </TouchableOpacity>
-              </View>
+              <CardDisciplina
+                key={disciplina.id}
+                disciplina={disciplina}
+                handleVerNotas={handleVerNotas}
+              />
             ))
           ) : (
             <View style={styles.emptyContainer}>
@@ -210,23 +194,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: colors.verdeEscuro,
     fontSize: 16,
-  },
-  header: {
-    alignItems: 'center',
-    paddingVertical: 25,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  logo: {
-    width: 160,
-    height: 90,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 22,
-    color: colors.verde,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
   },
   greetingContainer: {
     paddingHorizontal: 25,

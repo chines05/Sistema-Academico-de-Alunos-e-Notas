@@ -12,7 +12,10 @@ declare global {
       }
       Disciplina: {
         user: UserType
-        disciplinaId: number
+        disciplina: {
+          id: number
+          nome: string
+        }
         token: string
       }
       Profile: {

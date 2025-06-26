@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { Ionicons } from '@expo/vector-icons'
-import { colors } from './colors'
+import { colors } from '../utils/colors'
 
 export const toastConfig = {
   success: ({ text1, props, ...rest }: any) => (

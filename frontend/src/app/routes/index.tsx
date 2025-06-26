@@ -20,7 +20,8 @@ const AppTabs = ({ route }: any) => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string
+          type IoniconsName = React.ComponentProps<typeof Ionicons>['name']
+          let iconName: IoniconsName
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline'
@@ -30,7 +31,6 @@ const AppTabs = ({ route }: any) => {
             iconName = 'alert-circle'
           }
 
-          // Ícone com círculo de fundo quando ativo
           return (
             <View style={focused ? styles.activeIconContainer : null}>
               <Ionicons name={iconName} size={size} color={color} />

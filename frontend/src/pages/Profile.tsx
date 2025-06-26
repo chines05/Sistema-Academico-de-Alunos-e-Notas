@@ -25,6 +25,7 @@ import {
   passwordSchema,
   PasswordFormData,
 } from '../schemas/profileSchema'
+import Header from '../components/Header'
 
 const Profile = () => {
   const route = useRoute()
@@ -150,14 +151,7 @@ const Profile = () => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Image
-            source={require('../assets/imgs/logo-ifnmg-almenara.jpg')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.title}>Meu Perfil</Text>
-        </View>
+        <Header title="Meu Perfil" />
 
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
@@ -337,22 +331,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 50,
     paddingBottom: 30,
-  },
-  header: {
-    alignItems: 'center',
-    paddingVertical: 25,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  logo: {
-    width: 160,
-    height: 90,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 22,
-    color: colors.verde,
-    fontWeight: 'bold',
   },
   profileSection: {
     alignItems: 'center',

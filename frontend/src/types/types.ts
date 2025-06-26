@@ -4,23 +4,38 @@ export type UserType = {
   email: string
 }
 
-export interface HomeProps {
+export type HomeProps = {
   user: {
     id: number
     nome: string
     email: string
   }
   token: string
-  disciplinaId: number
+  disciplina: {
+    id: number
+    nome: string
+  }
 }
 
-export interface MatriculasResponseType {
+export type MatriculasResponseType = {
   alunoId: string
   matriculas: MatriculaType[]
 }
 
-export interface MatriculaType {
+export type MatriculaType = {
   id: number
   nome: string
   semestre: number
+}
+
+export type NotaDisciplinaAlunoType = {
+  alunoId: number
+  disciplinaId: number
+  notas: NotaType
+}
+
+export type NotaType = {
+  nota1: number
+  nota2: number
+  nota3: number
 }
