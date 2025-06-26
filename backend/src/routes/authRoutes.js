@@ -7,6 +7,7 @@ const router = Router()
 // Rotas de autenticação publicas
 router.post('/register', AuthController.register)
 router.post('/login', AuthController.login)
+router.post('/forgot-password', AuthController.forgotPassword)
 
 // Rotas protegidas
 router.put('/profile/:id/nome', verifyToken, AuthController.profileNome)
