@@ -17,13 +17,13 @@ class DisciplinaController extends Controller
     {
         // Verifica se o aluno existe
         $aluno = Aluno::find($alunoId);
-        
+
         if (!$aluno) {
             return response()->json(['message' => 'Aluno não encontrado'], 404);
         }
 
         // Busca as disciplinas do aluno através das matrículas
-        $disciplinas = Disciplina::whereHas('matriculas', function($query) use ($alunoId) {
+        $disciplinas = Disciplina::whereHas('matriculas', function ($query) use ($alunoId) {
             $query->where('aluno_id', $alunoId);
         })->get();
 
@@ -39,8 +39,8 @@ class DisciplinaController extends Controller
     public function notasPorDisciplina($alunoId, $disciplinaId)
     {
         $notas = Nota::where('aluno_id', $alunoId)
-                    ->where('disciplina_id', $disciplinaId)
-                    ->first();
+            ->where('disciplina_id', $disciplinaId)
+            ->first();
 
         if (!$notas) {
             return response()->json(['message' => 'Notas não encontradas para esta disciplina'], 404);
@@ -59,8 +59,8 @@ class DisciplinaController extends Controller
     public function mediaPorDisciplina($alunoId, $disciplinaId)
     {
         $notas = Nota::where('aluno_id', $alunoId)
-                    ->where('disciplina_id', $disciplinaId)
-                    ->first();
+            ->where('disciplina_id', $disciplinaId)
+            ->first();
 
         if (!$notas) {
             return response()->json(['message' => 'Notas não encontradas para cálculo da média'], 404);
