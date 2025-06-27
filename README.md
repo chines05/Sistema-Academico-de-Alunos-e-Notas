@@ -46,24 +46,20 @@ Baseado no modelo sugerido:
 - Toasts com react-native-toast-message
 - Componentes reutilizáveis
 
-## 🔐 Validações Implementadas
-
-- E-mail institucional válido (@aluno.ifnmg.edu.br ou @ifnmg.edu.br)
-- CPF com 11 dígitos e verificação de validade
-- Senha com no mínimo 6 caracteres, uma letra maiúscula e um número
-- Confirmação de senha no cadastro
-- Feedback visual para todos os erros
-
 ## 📚 Principais Rotas da API
 
+### Rotas Públicas:
 - `POST /login` – Autenticação e geração de token
-- `POST /logout` – Revogação do token (requisição autenticada)
-- `POST /forgot-password` – Geração e envio de nova senha por e-mail
-- `PUT /auth/profile/{id}/nome` – Atualiza o nome do aluno
-- `PUT /auth/profile/{id}/senha` – Altera senha com verificação da senha atual
-- `GET /disciplinas/aluno/{alunoId}` – Lista disciplinas do aluno
-- `GET /disciplinas/{alunoId}/nota/{disciplinaId}` – Exibe notas (N1, N2, N3)
-- `GET /disciplinas/{alunoId}/media/{disciplinaId}` – Retorna a média final e status
+- `POST /generate-new-password` – Geração e envio de nova senha por e-mail
+
+### Rotas Protegidas (auth:sanctum):
+- `POST /logout` – Revogação do token
+- `GET /user` – Dados do usuário autenticado
+- `PUT /change-password` – Altera senha do usuário
+- `PUT /change-name` – Atualiza nome do usuário
+- `GET /alunos/{aluno}/disciplinas` – Lista disciplinas do aluno
+- `GET /alunos/{aluno}/disciplinas/{disciplina}/notas` – Exibe notas (N1, N2, N3)
+- `GET /alunos/{aluno}/disciplinas/{disciplina}/media` – Retorna média final e status
 
 ## 📦 Como Executar o Projeto
 
@@ -82,15 +78,25 @@ php artisan key:generate
 ```
 
 Configure o arquivo `.env` com:
+- `DB_CONNECTION`
+- `DB_HOST`
+- `DB_PORT`
 - `DB_DATABASE`
 - `DB_USERNAME`
 - `DB_PASSWORD`
-- `MAILTRAP_USER` e `MAILTRAP_PASS` (opcional)
+- `MAIL_MAILER`
+- `MAIL_HOST`
+- `MAIL_PORT`
+- `MAIL_USERNAME`
+- `MAIL_PASSWORD`
+- `MAIL_ENCRYPTION`
+- `MAIL_FROM_ADDRESS`
+- `MAIL_FROM_NAME`
 
 Em seguida:
 ```bash
-php artisan migrate:fresh --seed
-php artisan serve --host=0.0.0.0 --port=8000
+php artisan migrate --seed
+php artisan serve --host=0.0.0.0
 ```
 
 Backend disponível em: `http://SEU_IP_LOCAL:8000/api`
@@ -124,6 +130,54 @@ Esse aluno possui diversas disciplinas e notas associadas.
 - `schemas` – Validações com Zod
 - `utils/api.ts` – Configuração global do Axios com JWT
 
+## 📋 Análise de Requisitos e Decisões Técnicas
+
+### Decisões de Arquitetura
+
+**Backend (Laravel)**
+- **Laravel Sanctum**: Escolhido para autenticação JWT por ser nativo, seguro e integrado ao Laravel
+- **Eloquent ORM**: Utilizado para relacionamentos entre alunos, disciplinas, matrículas e notas
+- **Middleware auth:sanctum**: Protege todas as rotas sensíveis da API
+- **Seeders**: Criados para popular o banco com dados de teste consistentes
+
+**Frontend (React Native + Expo)**
+- **Expo**: Facilita o desenvolvimento e teste em dispositivos físicos
+- **TypeScript**: Garante tipagem forte e reduz erros em runtime
+- **React Navigation**: Stack Navigator para autenticação e Bottom Tabs para navegação principal
+- **React Hook Form + Zod**: Validações client-side robustas com feedback visual
+- **Axios**: Automatiza o envio do token JWT e tratamento de erros
+
+### Implementação das Regras de Negócio
+
+1. **Autenticação Segura**
+   - Criptografia de senhas com Hash::make()
+   - Tokens JWT com expiração automática
+
+2. **Cálculo de Médias**
+   - Implementado no backend para garantir consistência
+   - Fórmula: (N1 + N2 + N3) / 3
+   - Status automático: Aprovado (≥7.0) / Reprovado (<7.0)
+
+3. **Relacionamentos de Dados**
+   - Aluno → Matrículas → Disciplinas (Many-to-Many)
+   - Notas vinculadas por aluno_id e disciplina_id
+   - Validação de integridade referencial
+
+### Segurança Implementada
+
+- **Sanitização de inputs** em todas as requisições
+- **Validação server-side** complementar à client-side
+- **Rate limiting** via middleware do Laravel
+- **CORS configurado** para aceitar apenas origens autorizadas
+- **Logout seguro** com revogação de tokens
+
+### Decisões de UX/UI
+
+- **Design responsivo** adaptável a diferentes tamanhos de tela
+- **Feedback visual** para todos os estados (loading, erro, sucesso)
+- **Navegação intuitiva** com Bottom Tabs e Stack Navigation
+- **Componentes reutilizáveis** para manter consistência visual
+
 ## ✅ Requisitos Atendidos
 
 - Backend em Laravel com autenticação e rotas protegidas ✔️
@@ -136,3 +190,4 @@ Esse aluno possui diversas disciplinas e notas associadas.
 - README e instruções completas ✔️
 - Migrations + seeders ✔️
 - Vídeo incluído ✔️
+
