@@ -32,6 +32,7 @@ Baseado no modelo sugerido:
 ## 🚀 Tecnologias Utilizadas
 
 ### Backend – Laravel 10 (PHP 8.2):
+
 - Laravel Sanctum (API Token Authentication)
 - Eloquent ORM + Migrations + Seeders
 - Middleware auth:sanctum para rotas protegidas
@@ -39,6 +40,7 @@ Baseado no modelo sugerido:
 - API RESTful com respostas JSON padronizadas
 
 ### Frontend – React Native + Expo:
+
 - React Navigation (Stack & Bottom Tabs)
 - React Hook Form + Zod
 - Axios com interceptor de token JWT
@@ -49,10 +51,12 @@ Baseado no modelo sugerido:
 ## 📚 Principais Rotas da API
 
 ### Rotas Públicas:
+
 - `POST /login` – Autenticação e geração de token
 - `POST /generate-new-password` – Geração e envio de nova senha por e-mail
 
 ### Rotas Protegidas (auth:sanctum):
+
 - `POST /logout` – Revogação do token
 - `GET /user` – Dados do usuário autenticado
 - `PUT /change-password` – Altera senha do usuário
@@ -64,12 +68,14 @@ Baseado no modelo sugerido:
 ## 📦 Como Executar o Projeto
 
 ### 1. Clonar o Repositório
+
 ```bash
 git clone https://github.com/chines05/Sistema-Academico-de-Alunos-e-Notas.git
 cd Sistema-Academico-de-Alunos-e-Notas
 ```
 
 ### 2. Backend (Laravel)
+
 ```bash
 cd backend
 composer install
@@ -78,6 +84,7 @@ php artisan key:generate
 ```
 
 Configure o arquivo `.env` com:
+
 - `DB_CONNECTION`
 - `DB_HOST`
 - `DB_PORT`
@@ -94,6 +101,7 @@ Configure o arquivo `.env` com:
 - `MAIL_FROM_NAME`
 
 Em seguida:
+
 ```bash
 php artisan migrate --seed
 php artisan serve --host=0.0.0.0
@@ -102,13 +110,14 @@ php artisan serve --host=0.0.0.0
 Backend disponível em: `http://SEU_IP_LOCAL:8000/api`
 
 ### 3. Frontend (Expo)
+
 ```bash
 cd frontend
 npm install
 npx expo start
 ```
 
-Abra com o aplicativo Expo Go no celular ou em emulador. Edite a variável `baseURL` no arquivo `utils/api.ts` para apontar para o IP local do backend (exemplo: `http://192.168.0.105:8000/api`)
+Abra com o aplicativo Expo Go no celular ou em emulador. Edite a variável `baseURL` no arquivo `utils/api.ts` para apontar para o IP local do backend (exemplo: `http://192.168.15.7:8000/api`)
 
 ## 🧪 Usuário de Teste
 
@@ -120,11 +129,13 @@ Esse aluno possui diversas disciplinas e notas associadas.
 ## 🗂️ Estrutura do Projeto
 
 ### backend/
+
 - `app/Http/Controllers` – Lógicas de autenticação, disciplinas, notas
 - `database/seeders` – Dados pré-cadastrados
 - `routes/api.php` – Rotas REST protegidas e públicas
 
 ### frontend/
+
 - `pages` – Telas: Login, Home, Disciplina, Perfil
 - `components` – Input, Header, CardDisciplina, Toast
 - `schemas` – Validações com Zod
@@ -135,12 +146,14 @@ Esse aluno possui diversas disciplinas e notas associadas.
 ### Decisões de Arquitetura
 
 **Backend (Laravel)**
+
 - **Laravel Sanctum**: Escolhido para autenticação JWT por ser nativo, seguro e integrado ao Laravel
 - **Eloquent ORM**: Utilizado para relacionamentos entre alunos, disciplinas, matrículas e notas
 - **Middleware auth:sanctum**: Protege todas as rotas sensíveis da API
 - **Seeders**: Criados para popular o banco com dados de teste consistentes
 
 **Frontend (React Native + Expo)**
+
 - **Expo**: Facilita o desenvolvimento e teste em dispositivos físicos
 - **TypeScript**: Garante tipagem forte e reduz erros em runtime
 - **React Navigation**: Stack Navigator para autenticação e Bottom Tabs para navegação principal
@@ -150,10 +163,12 @@ Esse aluno possui diversas disciplinas e notas associadas.
 ### Implementação das Regras de Negócio
 
 1. **Autenticação Segura**
+
    - Criptografia de senhas com Hash::make()
    - Tokens JWT com expiração automática
 
 2. **Cálculo de Médias**
+
    - Implementado no backend para garantir consistência
    - Fórmula: (N1 + N2 + N3) / 3
    - Status automático: Aprovado (≥7.0) / Reprovado (<7.0)
@@ -190,4 +205,3 @@ Esse aluno possui diversas disciplinas e notas associadas.
 - README e instruções completas ✔️
 - Migrations + seeders ✔️
 - Vídeo incluído ✔️
-
