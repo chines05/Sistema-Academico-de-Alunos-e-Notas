@@ -34,7 +34,7 @@ const Login = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'gmmp@aluno.ifnmg.edu.br',
+      email: 'chines@aluno.ifnmg.edu.br',
       senha: 'Chines05',
     },
   })
@@ -152,7 +152,7 @@ const Login = () => {
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/*           <TouchableOpacity
             onPress={() => navigation.navigate('Register')}
             style={styles.registerLink}
             activeOpacity={0.6}
@@ -161,7 +161,7 @@ const Login = () => {
               Não possui cadastro?{' '}
               <Text style={styles.linkTextBold}>Crie sua conta</Text>
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 

@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { Platform } from 'react-native'
 
 const api = axios.create({
   baseURL: 'http://192.168.15.7:8000/api',
@@ -8,8 +7,6 @@ const api = axios.create({
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-  timeout: 1000,
-  withCredentials: true,
 })
 
 api.interceptors.request.use(
