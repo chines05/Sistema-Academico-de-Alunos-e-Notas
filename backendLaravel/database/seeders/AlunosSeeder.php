@@ -16,12 +16,5 @@ class AlunosSeeder extends Seeder
             'email' => 'chines@aluno.ifnmg.edu.br',
             'senha' => Hash::make('Chines05')
         ]);
-
-        Aluno::create([
-            'nome' => 'Gabriel Martins',
-            'cpf' => '23456789012',
-            'email' => 'gabriel@aluno.ifnmg.edu.br',
-            'senha' => Hash::make('Chines05')
-        ]);
     }
 }

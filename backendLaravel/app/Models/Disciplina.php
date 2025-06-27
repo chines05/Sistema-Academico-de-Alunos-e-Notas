@@ -9,18 +9,10 @@ class Disciplina extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nome',
-        'semestre'
-    ];
+    protected $fillable = ['nome', 'semestre'];
 
     public function matriculas()
     {
         return $this->hasMany(Matricula::class);
-    }
-
-    public function notas()
-    {
-        return $this->hasMany(Nota::class);
     }
 }

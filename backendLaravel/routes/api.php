@@ -6,24 +6,25 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DisciplinaController;
 
 Route::middleware('api')->group(function () {
-    // Rota pública de login
+    // Autenticação
     Route::post('/login', [AuthController::class, 'login']);
     
-    // Rotas protegidas por autenticação
+    // Rotas autenticadas
     Route::middleware('auth:sanctum')->group(function () {
-        // Rota de logout
+        // Sessão do usuário
         Route::post('/logout', [AuthController::class, 'logout']);
-        
-        // Rota do usuário autenticado
         Route::get('/user', function (Request $request) {
-            return response()->json([
-                'user' => $request->user(),
-                'roles' => [] // Você pode adicionar roles/permissões aqui se necessário
-            ]);
+            return $request->user()->only(['id', 'nome', 'email']);
         });
         
-        // Rotas de disciplinas (apenas as necessárias)
-        Route::get('/disciplinas', [DisciplinaController::class, 'index']); // Listar todas
-        Route::get('/disciplinas/{id}', [DisciplinaController::class, 'show']); // Mostrar uma específica
+        // Rotas acadêmicas
+        Route::prefix('alunos/{aluno}')->group(function () {
+            Route::get('/disciplinas', [DisciplinaController::class, 'disciplinasPorAluno']);
+            
+            Route::prefix('disciplinas/{disciplina}')->group(function () {
+                Route::get('/notas', [DisciplinaController::class, 'notasPorDisciplina']);
+                Route::get('/media', [DisciplinaController::class, 'mediaPorDisciplina']);
+            });
+        });
     });
 });
