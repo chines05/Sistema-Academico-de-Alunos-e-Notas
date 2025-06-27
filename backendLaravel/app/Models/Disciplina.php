@@ -3,23 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 
-class Aluno extends Authenticatable
+class Disciplina extends Model
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory;
 
     protected $fillable = [
         'nome',
-        'cpf',
-        'email', 
-        'senha'
-    ];
-
-    protected $hidden = [
-        'senha',
-        'remember_token',
+        'semestre'
     ];
 
     public function matriculas()
