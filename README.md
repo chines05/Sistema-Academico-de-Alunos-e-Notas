@@ -1,136 +1,138 @@
 # 🎓 Sistema Acadêmico IFNMG
 
-Aplicativo mobile desenvolvido com React Native, voltado para alunos do Instituto Federal do Norte de Minas Gerais (IFNMG), com funcionalidades de autenticação, visualização de disciplinas, notas e gerenciamento de perfil.
+Aplicativo mobile desenvolvido com React Native e Laravel, voltado para alunos do Instituto Federal do Norte de Minas Gerais (IFNMG). Permite autenticação segura e visualização de notas por disciplina, em um ambiente funcional e responsivo.
 
----
+## 📋 Objetivo
 
-## 📱 Funcionalidades
+Construir um protótipo funcional para avaliação prática na vaga de desenvolvedor de software, que permita:
 
-- Login seguro com e-mail institucional
-- Cadastro com validações de CPF, senha e domínio
-- Autenticação via JWT
-- Navegação por tab bar (Home e Profile)
-- Listagem de disciplinas com filtro por semestre
-- Visualização de notas por disciplina 
-- Exibição e edição de dados do perfil
-- Logout com destruição de sessão
+- Login com e-mail institucional
+- Seleção de disciplina
+- Exibição de nome, semestre, 3 notas (N1, N2, N3)
+- Cálculo da média final (feito no backend)
 
----
+## ✅ Funcionalidades
+
+- Autenticação JWT segura via Laravel Sanctum
+- Listagem de disciplinas por matrícula
+- Visualização das notas N1, N2, N3 por disciplina
+- Exibição de média final e status (Aprovado / Reprovado)
+- Edição de nome e senha no perfil
+- Logout com destruição do token
+
+## 🧪 Modelo de Dados
+
+Baseado no modelo sugerido:
+
+- **alunos** (id, nome, cpf, email, senha)
+- **disciplinas** (id, nome, semestre)
+- **matriculas** (id, aluno_id, disciplina_id, semestre)
+- **notas** (id, aluno_id, disciplina_id, nota1, nota2, nota3)
 
 ## 🚀 Tecnologias Utilizadas
 
-### 🔹 Mobile (React Native + Expo)
+### Backend – Laravel 10 (PHP 8.2):
+- Laravel Sanctum (API Token Authentication)
+- Eloquent ORM + Migrations + Seeders
+- Middleware auth:sanctum para rotas protegidas
+- Envio de email com senha temporária via Mailtrap
+- API RESTful com respostas JSON padronizadas
+
+### Frontend – React Native + Expo:
 - React Navigation (Stack & Bottom Tabs)
-- React Hook Form + Zod (validação)
-- Axios (requisições HTTP)
-- Toasts com `react-native-toast-message`
-- Ícones com `Ionicons`
+- React Hook Form + Zod
+- Axios com interceptor de token JWT
 - Tipagem com TypeScript
-- Componentes reutilizáveis (`Input.tsx`, `Header.tsx`, `toast.tsx`, `CardDisciplina.tsx`)
+- Toasts com react-native-toast-message
+- Componentes reutilizáveis
 
-### 🔹 Backend (Node.js + Express)
-- MySQL com `mysql2`
-- Autenticação com JWT
-- Hash de senha com bcrypt
-- Verificação de domínio institucional nos e-mails
-- Rotas para autenticação: profile, disciplinas e notas/media
+## 🔐 Validações Implementadas
 
----
-
-## 🔐 Validações Aplicadas
-
-- Apenas e-mails institucionais permitidos:
-  - `@aluno.ifnmg.edu.br`
-  - `@ifnmg.edu.br`
-- CPF com exatamente 11 dígitos numéricos e verídico
-- Senhas com no mínimo 6 caracteres, uma letra maiuscula e pelo menos um número
+- E-mail institucional válido (@aluno.ifnmg.edu.br ou @ifnmg.edu.br)
+- CPF com 11 dígitos e verificação de validade
+- Senha com no mínimo 6 caracteres, uma letra maiúscula e um número
 - Confirmação de senha no cadastro
-- Feedback visual em caso de erros (via Toast)
+- Feedback visual para todos os erros
 
----
+## 📚 Principais Rotas da API
 
-## 🧭 Navegação e Rotas
+- `POST /login` – Autenticação e geração de token
+- `POST /logout` – Revogação do token (requisição autenticada)
+- `POST /forgot-password` – Geração e envio de nova senha por e-mail
+- `PUT /auth/profile/{id}/nome` – Atualiza o nome do aluno
+- `PUT /auth/profile/{id}/senha` – Altera senha com verificação da senha atual
+- `GET /disciplinas/aluno/{alunoId}` – Lista disciplinas do aluno
+- `GET /disciplinas/{alunoId}/nota/{disciplinaId}` – Exibe notas (N1, N2, N3)
+- `GET /disciplinas/{alunoId}/media/{disciplinaId}` – Retorna a média final e status
 
-| Rota         | Descrição                          | Protegida |
-|--------------|-------------------------------------|-----------|
-| `/login`     | Tela de autenticação               | ❌        |
-| `/register`  | Cadastro de novos alunos           | ❌        |
-| `AppTabs`    | Tab bar com telas de Home e Perfil | ✅        |
-| `/disciplina`| Tela de detalhes da disciplina     | ✅        |
+## 📦 Como Executar o Projeto
 
----
-
-## 🏠 Home
-
-- Saudação com o primeiro nome do aluno
-- Lista de disciplinas com:
-  - Nome
-  - Semestre (ex: `1º semestre`)
-  - Botão “Ver notas”
-- Filtro de semestre via `Picker`
-- Integração com rota: `GET /matriculas/aluno/:id`
-
----
-
-## 👤 Perfil
-
-- Exibição dos dados do aluno: nome, email, matrícula
-- Edição de nome e senha
-- Integração com rotas: `PUT /auth/profile/:id/nome ou senha`
-- Botão “Sair da conta”
-- Integração com rota: `POST /auth/logout`
-
----
-
-## 📚 Tela de Disciplina
-
-- Visualização de Notas: N1, N2, N3
-- Cálculo e exibição da média final
-- Indicação de status: Aprovado / Reprovado
-
----
-
-## 📌 Análise de Requisitos e Decisões Técnicas
-
-### 🎯 Objetivo
-
-Oferecer uma interface moderna e funcional para que alunos do IFNMG tenham acesso facilitado às suas informações acadêmicas, com segurança e responsividade.
-
-### ✅ Requisitos Atendidos
-
-- Autenticação protegida com JWT
-- Navegação segura e tipada
-- Integração com banco de dados relacional
-- Feedback visual durante todo o fluxo
-- Design alinhado à identidade institucional do IFNMG
-
-### 🧠 Decisões Técnicas
-
-- **Expo + React Native**: agilidade e simplicidade no ciclo de desenvolvimento mobile
-- **Zod + React-Hook-Form**: validação reativa, declarativa e com boa escalabilidade
-- **MySQL**: banco relacional robusto para o modelo acadêmico
-- **JWT**: gerenciamento de sessão seguro e stateless
-- **Bcrypt**: utilizado para hash seguro das senhas dos alunos, garantindo que informações sensíveis não fiquem expostas mesmo em caso de vazamento de dados.
-
-## 📦 Execução do Projeto
-
+### 1. Clonar o Repositório
 ```bash
-# Clonando o repositório
 git clone https://github.com/chines05/Sistema-Academico-de-Alunos-e-Notas.git
 cd Sistema-Academico-de-Alunos-e-Notas
+```
 
-# Instalando e executando o app mobile (Expo)
-cd frontend
-npm install        # ou yarn
-npx expo start     # inicia o app no modo de desenvolvimento
-
-# Escaneie o QR Code com o Expo Go no celular ou use um emulador Android/iOS
-# Certifique-se de que o backend está rodando antes de fazer login
-
-# Instalando e executando o backend (Node + MySQL)
+### 2. Backend (Laravel)
+```bash
 cd backend
-npm install        # ou yarn
-npm run dev        # ou yarn dev
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-# Verifique se o .env está corretamente configurado (porta, senha do MySQL, JWT_SECRET, etc.)
-# O banco de dados deve estar criado com as tabelas necessárias
+Configure o arquivo `.env` com:
+- `DB_DATABASE`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `MAILTRAP_USER` e `MAILTRAP_PASS` (opcional)
+
+Em seguida:
+```bash
+php artisan migrate:fresh --seed
+php artisan serve 
+```
+
+Backend disponível em: `http://SEU_IP_LOCAL:8000/api`
+
+### 3. Frontend (Expo)
+```bash
+cd frontend
+npm install
+npx expo start
+```
+
+Abra com o aplicativo Expo Go no celular ou em emulador. Edite a variável `baseURL` no arquivo `utils/api.ts` para apontar para o IP local do backend (exemplo: `http://192.168.0.105:8000/api`)
+
+## 🧪 Usuário de Teste
+
+- **Email:** chines@aluno.ifnmg.edu.br
+- **Senha:** Chines05
+
+Esse aluno possui diversas disciplinas e notas associadas.
+
+## 🗂️ Estrutura do Projeto
+
+### backend/
+- `app/Http/Controllers` – Lógicas de autenticação, disciplinas, notas
+- `database/seeders` – Dados pré-cadastrados
+- `routes/api.php` – Rotas REST protegidas e públicas
+
+### frontend/
+- `pages` – Telas: Login, Home, Disciplina, Perfil
+- `components` – Input, Header, CardDisciplina, Toast
+- `schemas` – Validações com Zod
+- `utils/api.ts` – Configuração global do Axios com JWT
+
+## ✅ Requisitos Atendidos
+
+- Backend em Laravel com autenticação e rotas protegidas ✔️
+- Frontend em React Native com layout limpo ✔️
+- Tela de login ✔️
+- Seleção de disciplina + exibição das notas ✔️
+- Média calculada no backend ✔️
+- Indicação de status (aprovado / reprovado) ✔️
+- API RESTful ✔️
+- README e instruções completas ✔️
+- Migrations + seeders ✔️
+- Vídeo incluído ✔️
