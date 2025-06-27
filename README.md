@@ -70,7 +70,7 @@ Baseado no modelo sugerido:
 ### 1. Clonar o Repositório
 
 ```bash
-git clone https://github.com/chines05/Sistema-Academico-de-Alunos-e-Notas.git
+git clone https://github.com/chines05/Sistema-Academico-de-Notas-IFNMG.git
 cd Sistema-Academico-de-Alunos-e-Notas
 ```
 
