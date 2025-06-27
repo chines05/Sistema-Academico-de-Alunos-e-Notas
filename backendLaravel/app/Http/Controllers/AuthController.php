@@ -22,7 +22,7 @@ class AuthController extends Controller
         $aluno = Aluno::where('email', $request->email)->first();
 
         if (!$aluno || !Hash::check($request->senha, $aluno->senha)) {
-            return response()->json(['erro' => 'Credenciais inválidas'], 401);
+            return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
 
         $token = $aluno->createToken('auth_token')->plainTextToken;
