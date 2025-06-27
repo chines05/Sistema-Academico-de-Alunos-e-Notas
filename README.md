@@ -1,4 +1,4 @@
-# 🎓 Sistema Acadêmico IFNMG
+# 🎓 Sistema Acadêmico de Notas IFNMG
 
 Aplicativo mobile desenvolvido com React Native e Laravel, voltado para alunos do Instituto Federal do Norte de Minas Gerais (IFNMG). Permite autenticação segura e visualização de notas por disciplina, em um ambiente funcional e responsivo.
 
