@@ -47,7 +47,6 @@ const ForgotPassword = () => {
       Toast.show({
         type: 'success',
         text1: 'Email enviado com sucesso',
-        text2: 'Verifique sua caixa de entrada para redefinir sua senha',
       })
     } catch (error: any) {
       Toast.show({

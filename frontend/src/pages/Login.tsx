@@ -122,6 +122,14 @@ const Login = () => {
           />
 
           <TouchableOpacity
+            onPress={() => navigation.navigate('ForgotPassword')}
+            style={styles.forgotPasswordLink}
+            activeOpacity={0.6}
+          >
+            <Text style={styles.linkText}>Esqueceu sua senha?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[styles.button, isSubmitting && styles.buttonDisabled]}
             onPress={handleSubmit(onSubmit)}
             disabled={isSubmitting}
@@ -150,13 +158,6 @@ const Login = () => {
               Não possui cadastro?{' '}
               <Text style={styles.linkTextBold}>Crie sua conta</Text>
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPassword')}
-            style={styles.forgotPasswordLink}
-            activeOpacity={0.6}
-          >
-            <Text style={styles.linkText}>Esqueceu sua senha?</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -245,8 +246,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   forgotPasswordLink: {
-    marginTop: 15,
-    alignSelf: 'center',
+    alignSelf: 'flex-end',
   },
   footer: {
     paddingVertical: 15,
