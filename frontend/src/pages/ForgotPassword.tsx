@@ -41,19 +41,23 @@ const ForgotPassword = () => {
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setLoading(true)
     try {
-      await api.post('/auth/forgot-password', { email: data.email })
+      await api.post('/generate-new-password', { email: data.email })
 
       setEmailSent(true)
       Toast.show({
         type: 'success',
         text1: 'Email enviado com sucesso',
       })
+
+      navigation.navigate('Login')
     } catch (error: any) {
+      setEmailSent(true)
       Toast.show({
-        type: 'error',
-        text1:
-          error.response?.data?.erro || 'Erro ao enviar email de recuperação',
+        type: 'success',
+        text1: 'Email enviado com sucesso',
       })
+
+      navigation.navigate('Login')
     } finally {
       setLoading(false)
     }

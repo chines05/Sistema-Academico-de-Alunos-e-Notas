@@ -16,7 +16,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Toast from 'react-native-toast-message'
 import api from 'src/utils/api'
 import { colors } from 'src/utils/colors'
-import { HomeProps } from 'src/types/types'
 import Input from 'src/components/Input'
 import {
   profileSchema,
@@ -25,11 +24,12 @@ import {
   PasswordFormData,
 } from 'src/schemas/profileSchema'
 import Header from 'src/components/Header'
+import { DisciplinaRouteParamsType } from 'src/types/types'
 
 const Profile = () => {
   const route = useRoute()
   const navigation = useNavigation()
-  const { user: initialUser, token } = route.params as HomeProps
+  const { user: initialUser, token } = route.params as DisciplinaRouteParamsType
   const [editingName, setEditingName] = useState(false)
   const [editingPassword, setEditingPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -57,8 +57,8 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post(
-        '/auth/logout',
+      const response = await api.post(
+        '/logout',
         {},
         {
           headers: {
@@ -74,12 +74,12 @@ const Profile = () => {
 
       Toast.show({
         type: 'success',
-        text1: 'Você saiu da sua conta',
+        text1: response.data?.message || 'Você saiu da sua conta',
       })
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: 'Erro ao sair da conta',
+        text1: error.response?.data?.message || 'Erro ao sair da conta',
       })
     }
   }
@@ -87,9 +87,11 @@ const Profile = () => {
   const updateProfileNome = async (data: ProfileFormData) => {
     setLoading(true)
     try {
-      const { data: response } = await api.put(
-        `/auth/profile/${user.id}/nome`,
-        data,
+      const response = await api.put(
+        `/change-name`,
+        {
+          name: data.nome,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -112,13 +114,13 @@ const Profile = () => {
 
       Toast.show({
         type: 'success',
-        text1: response.message || 'Perfil atualizado com sucesso!',
+        text1: response.data?.message || 'Perfil atualizado com sucesso!',
       })
       setEditingName(false)
     } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: error.response?.data?.erro || 'Erro ao atualizar perfil',
+        text1: error.response?.data?.message || 'Erro ao atualizar perfil',
       })
     } finally {
       setLoading(false)
@@ -128,11 +130,12 @@ const Profile = () => {
   const updatePassword = async (data: PasswordFormData) => {
     setLoading(true)
     try {
-      await api.put(
-        `/auth/profile/${user.id}/senha`,
+      const response = await api.put(
+        `/change-password`,
         {
-          senhaAtual: data.senhaAtual,
-          novaSenha: data.novaSenha,
+          current_password: data.senhaAtual,
+          new_password: data.novaSenha,
+          new_password_confirmation: data.confirmarSenha,
         },
         {
           headers: {
@@ -143,14 +146,15 @@ const Profile = () => {
 
       Toast.show({
         type: 'success',
-        text1: 'Senha alterada com sucesso!',
+        text1: response.data.message || 'Senha alterada com sucesso!',
       })
+
       setEditingPassword(false)
       resetPasswordForm()
     } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: error.response?.data?.erro || 'Erro ao alterar senha',
+        text1: error.response?.data?.message || 'Erro ao alterar senha',
       })
     } finally {
       setLoading(false)

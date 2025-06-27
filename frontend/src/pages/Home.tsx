@@ -68,13 +68,11 @@ const Home = () => {
         ) as string[]),
       ]
       setSemestres(todosSemestres)
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: 'error',
-        text1: 'Erro ao carregar disciplinas',
-        text2: 'Não foi possível carregar suas disciplinas matriculadas',
+        text1: error.response?.data?.message || 'Erro ao carregar disciplinas',
       })
-      console.error('Erro ao carregar disciplinas:', error)
     } finally {
       setLoading(false)
     }

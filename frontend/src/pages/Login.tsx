@@ -34,7 +34,7 @@ const Login = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'chines@aluno.ifnmg.edu.br',
+      email: 'gmmp@aluno.ifnmg.edu.br',
       senha: 'Chines05',
     },
   })
@@ -64,23 +64,12 @@ const Login = () => {
 
       Toast.show({
         type: 'success',
-        text1: 'Login realizado com sucesso!',
+        text1: response.data.message || 'Login realizado com sucesso!',
       })
     } catch (error: any) {
-      let errorMessage = 'Erro ao realizar login'
-
-      if (error.response) {
-        errorMessage =
-          error.response.data?.erro ||
-          error.response.data?.message ||
-          errorMessage
-      } else if (error.request) {
-        errorMessage = 'Sem resposta do servidor - verifique sua conexão'
-      }
-
       Toast.show({
         type: 'error',
-        text1: errorMessage,
+        text1: error.response?.data?.message || 'Erro ao fazer login',
       })
     }
   }
