@@ -20,6 +20,7 @@ import { colors } from 'src/utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 import Toast from 'react-native-toast-message'
 import * as Animatable from 'react-native-animatable'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { width } = Dimensions.get('window')
 
@@ -40,33 +41,46 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const { data: response } = await api.post('/auth/login', data)
+      const response = await api.post('/login', {
+        email: data.email,
+        senha: data.senha,
+      })
 
-      if (!response.token || !response.user) {
-        throw new Error('Dados incompletos na resposta')
+      if (!response.data.token || !response.data.user) {
+        throw new Error('Dados incompletos na resposta do servidor')
       }
+
+      await AsyncStorage.setItem('@token', response.data.token)
 
       navigation.reset({
         index: 0,
         routes: [
           {
             name: 'AppTabs',
-            params: {
-              user: response.user,
-              token: response.token,
-            },
+            params: { user: response.data.user, token: response.data.token },
           },
         ],
       })
 
       Toast.show({
         type: 'success',
-        text1: response.message,
+        text1: 'Login realizado com sucesso!',
       })
     } catch (error: any) {
+      let errorMessage = 'Erro ao realizar login'
+
+      if (error.response) {
+        errorMessage =
+          error.response.data?.erro ||
+          error.response.data?.message ||
+          errorMessage
+      } else if (error.request) {
+        errorMessage = 'Sem resposta do servidor - verifique sua conexão'
+      }
+
       Toast.show({
         type: 'error',
-        text1: error.response?.data?.erro || 'Falha ao realizar login',
+        text1: errorMessage,
       })
     }
   }

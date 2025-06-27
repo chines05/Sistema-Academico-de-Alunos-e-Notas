@@ -13,20 +13,22 @@ import { Ionicons } from '@expo/vector-icons'
 import api from 'src/utils/api'
 import Toast from 'react-native-toast-message'
 import {
-  HomeProps,
+  DisciplinaRouteParamsType,
   MediaDisciplinaType,
-  NotasDisciplinaType,
+  NotasPorDisciplinaType,
 } from 'src/types/types'
 import { colors } from 'src/utils/colors'
 import Header from 'src/components/Header'
-;('')
+
 const Disciplina = () => {
   const route = useRoute()
   const navigation = useNavigation()
-  const { user, disciplina, token } = route.params as HomeProps
+  const { user, disciplina, token } = route.params as DisciplinaRouteParamsType
   const [mediaDisciplina, setMediaDisciplina] =
     useState<MediaDisciplinaType | null>(null)
-  const [notasUser, setNotasUser] = useState<NotasDisciplinaType | null>(null)
+  const [notasUser, setNotasUser] = useState<NotasPorDisciplinaType | null>(
+    null
+  )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -34,36 +36,27 @@ const Disciplina = () => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        setError(null)
 
         const [mediaResponse, notasResponse] = await Promise.all([
-          api.get(`/medias/aluno/${user.id}/disciplina/${disciplina.id}`, {
+          api.get(`/alunos/${user.id}/disciplinas/${disciplina.id}/media`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          api.get(`/notas/aluno/${user.id}/disciplina/${disciplina.id}/`, {
+          api.get(`/alunos/${user.id}/disciplinas/${disciplina.id}/notas`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ])
 
         setMediaDisciplina(mediaResponse.data)
         setNotasUser(notasResponse.data)
-      } catch (error: any) {
-        setError(
-          error.response?.data?.erro || 'Voce nao possui notas nesta disciplina'
-        )
-        Toast.show({
-          type: 'error',
-          text1:
-            error.response?.data?.erro ||
-            'Erro ao carregar dados da disciplina',
-        })
+      } catch (error) {
+        setError('Erro ao carregar dados da disciplina')
       } finally {
         setLoading(false)
       }
     }
 
     fetchData()
-  }, [disciplina.id, user.id, token])
+  }, [user.id, disciplina.id, token])
 
   if (!token || !user) {
     return (
@@ -182,25 +175,25 @@ const Disciplina = () => {
               <Text
                 style={[
                   styles.infoValue,
-                  mediaDisciplina.media.status === 'aprovado'
+                  mediaDisciplina.status === 'aprovado'
                     ? styles.successText
                     : styles.errorText,
                 ]}
               >
-                {mediaDisciplina.media.media}
+                {mediaDisciplina.media}
               </Text>
             </View>
 
             <View style={styles.statusContainer}>
               <Ionicons
                 name={
-                  mediaDisciplina.media.status === 'aprovado'
+                  mediaDisciplina.status === 'aprovado'
                     ? 'checkmark-circle'
                     : 'close-circle'
                 }
                 size={24}
                 color={
-                  mediaDisciplina.media.status === 'aprovado'
+                  mediaDisciplina.status === 'aprovado'
                     ? colors.verde
                     : colors.vermelho
                 }
@@ -208,12 +201,12 @@ const Disciplina = () => {
               <Text
                 style={[
                   styles.statusText,
-                  mediaDisciplina.media.status === 'aprovado'
+                  mediaDisciplina.status === 'aprovado'
                     ? styles.successText
                     : styles.errorText,
                 ]}
               >
-                {mediaDisciplina.media.status === 'aprovado'
+                {mediaDisciplina.status === 'aprovado'
                   ? 'Aprovado'
                   : 'Reprovado'}
               </Text>

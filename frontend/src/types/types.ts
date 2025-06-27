@@ -4,58 +4,38 @@ export type UserType = {
   email: string
 }
 
-export type HomeProps = {
-  user: {
-    id: number
-    nome: string
-    email: string
-  }
-  token: string
-  disciplina: {
-    id: number
-    nome: string
-    semestre: number
-  }
-}
-
-export type MatriculasResponseType = {
-  alunoId: string
-  matriculas: MatriculaType[]
-}
-
-export type MatriculaType = {
-  id: number
-  nome: string
-  semestre: number
-}
-
-export type MediaDisciplinaType = {
-  disciplina: DisciplinaType
-  media: MediaType
-}
-
 export type DisciplinaType = {
   id: number
   nome: string
+  semestre: string
 }
 
-export type MediaType = {
-  media: number
-  status: 'aprovado' | 'reprovado'
-}
-
-enum Status {
-  APROVADO = 'aprovado',
-  REPROVADO = 'reprovado',
-}
-
-export type NotasDisciplinaType = {
+export interface DisciplinaRouteParamsType {
+  user: UserType
   disciplina: DisciplinaType
-  notas: NotaType
+  token: string
 }
 
-export type NotaType = {
+export interface DisciplinaAlunoType {
+  aluno: UserType
+  disciplinas: DisciplinaType[]
+}
+
+export interface NotasPorDisciplinaType {
+  aluno_id: number
+  disciplina_id: number
+  notas: NotasType
+}
+
+interface NotasType {
   nota1: number
   nota2: number
   nota3: number
+}
+
+export interface MediaDisciplinaType {
+  aluno_id: number
+  disciplina_id: number
+  media: number
+  status: string
 }

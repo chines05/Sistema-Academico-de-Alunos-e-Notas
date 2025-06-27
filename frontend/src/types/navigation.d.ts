@@ -15,7 +15,7 @@ declare global {
         disciplina: {
           id: number
           nome: string
-          semestre: number
+          semestre: string
         }
         token: string
       }

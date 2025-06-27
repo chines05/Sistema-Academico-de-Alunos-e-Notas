@@ -10,19 +10,18 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
-import { HomeProps, MatriculasResponseType } from 'src/types/types'
 import { colors } from 'src/utils/colors'
 import Toast from 'react-native-toast-message'
 import api from 'src/utils/api'
-
 import CardDisciplina from 'src/components/Home/CardDisplina'
 import Header from 'src/components/Header'
+import { DisciplinaAlunoType, DisciplinaRouteParamsType } from 'src/types/types'
 
 const Home = () => {
   const route = useRoute()
-  const { user: userParam, token } = route.params as HomeProps
+  const { user: userParam, token } = route.params as DisciplinaRouteParamsType
   const [user, setUser] = useState(userParam)
-  const [disciplinas, setDisciplinas] = useState<MatriculasResponseType | null>(
+  const [disciplinas, setDisciplinas] = useState<DisciplinaAlunoType | null>(
     null
   )
   const [loading, setLoading] = useState(true)
@@ -38,7 +37,7 @@ const Home = () => {
   const handleVerNotas = (
     disciplinaId: number,
     disciplinaNome: string,
-    semestre: number
+    semestre: string
   ) => {
     navigation.navigate('Disciplina', {
       user,
@@ -51,9 +50,10 @@ const Home = () => {
     })
   }
 
-  const loadMatriculas = async () => {
+  const loadDisciplinas = async () => {
     try {
-      const { data } = await api.get(`/matriculas/aluno/${user.id}`, {
+      setLoading(true)
+      const { data } = await api.get(`/alunos/${user.id}/disciplinas`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -63,30 +63,32 @@ const Home = () => {
 
       const todosSemestres = [
         'Todos',
-        ...Array.from(
-          new Set(data.matriculas.map((d: { semestre: number }) => d.semestre))
-        ).map(String),
+        ...(Array.from(
+          new Set(data.disciplinas.map((d: any) => d.semestre))
+        ) as string[]),
       ]
       setSemestres(todosSemestres)
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Você não está matriculado em nenhuma disciplina',
+        text1: 'Erro ao carregar disciplinas',
+        text2: 'Não foi possível carregar suas disciplinas matriculadas',
       })
+      console.error('Erro ao carregar disciplinas:', error)
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    loadMatriculas()
+    loadDisciplinas()
   }, [token, user.id])
 
   const disciplinasFiltradas =
     semestreSelecionado === 'Todos'
-      ? disciplinas?.matriculas
-      : disciplinas?.matriculas?.filter(
-          (d) => String(d.semestre) === semestreSelecionado
+      ? disciplinas?.disciplinas
+      : disciplinas?.disciplinas?.filter(
+          (d) => d.semestre === semestreSelecionado
         )
 
   if (!token || !user) {
@@ -132,7 +134,7 @@ const Home = () => {
                   <Picker.Item
                     key={semestre}
                     label={
-                      semestre === 'Todos' ? 'Todos' : `${semestre}º semestre`
+                      semestre === 'Todos' ? 'Todos' : `Semestre ${semestre}`
                     }
                     value={semestre}
                   />
@@ -147,7 +149,10 @@ const Home = () => {
             disciplinasFiltradas.map((disciplina) => (
               <CardDisciplina
                 key={disciplina.id}
-                disciplina={disciplina}
+                disciplina={{
+                  ...disciplina,
+                  semestre: Number(disciplina.semestre), // Converte para número se necessário
+                }}
                 handleVerNotas={handleVerNotas}
               />
             ))
@@ -162,7 +167,7 @@ const Home = () => {
               <Text style={styles.emptyTitle}>
                 {semestreSelecionado === 'Todos'
                   ? 'Nenhuma disciplina encontrada'
-                  : `Nenhuma matrícula em ${semestreSelecionado}`}
+                  : `Nenhuma disciplina no semestre ${semestreSelecionado}`}
               </Text>
               <Text style={styles.emptyText}>
                 {semestreSelecionado === 'Todos'
